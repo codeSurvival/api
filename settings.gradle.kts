@@ -1,3 +1,5 @@
 rootProject.name = "code-survival"
-include("core.application")
 include("web")
+include("core.application")
+include("core.domain")
+include("infrastructure")
