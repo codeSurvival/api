@@ -7,7 +7,7 @@ interface IUsersRepository {
 
     fun findAll(): List<User>
 
-    fun save(account: User): UserId
+    fun save(user: User): UserId
     fun getNewId(): UserId
     fun findByCredentials(username: String, password: String): User?
 

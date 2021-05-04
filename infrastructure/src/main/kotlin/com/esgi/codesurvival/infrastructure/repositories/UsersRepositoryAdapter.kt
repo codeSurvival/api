@@ -3,35 +3,46 @@ package com.esgi.codesurvival.infrastructure.repositories
 import com.esgi.codesurvival.application.users.repositories.IUsersRepository
 import com.esgi.codesurvival.domain.user.User
 import com.esgi.codesurvival.domain.user.UserId
+import com.esgi.codesurvival.infrastructure.mappers.to
+import com.esgi.codesurvival.infrastructure.models.UserEntity
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.*
 
 
 @Service
-class UsersRepositoryAdapter  @Autowired constructor(private val repository: UsersRepository) : IUsersRepository  {
+class UsersRepositoryAdapter @Autowired constructor(private val repository: UsersRepository) : IUsersRepository {
     override fun findAll(): List<User> {
-        TODO("Not yet implemented")
+        return repository.findAll().map { it.to() }
     }
 
-    override fun save(account: User): UserId {
-        TODO("Not yet implemented")
+    override fun save(user: User): UserId {
+        return UserId(
+            repository.save(UserEntity(
+                id = user.id.value,
+                username = user.username,
+                email = user.email,
+                password = user.password,
+                role = user.role
+            ))
+                .id
+        )
     }
 
     override fun getNewId(): UserId {
-        TODO("Not yet implemented")
+        return UserId(UUID.randomUUID())
     }
 
     override fun findByCredentials(username: String, password: String): User? {
-        TODO("Not yet implemented")
+        return repository.findByUsernameAndPassword(username, password)?.to()
     }
 
     override fun findByUsername(username: String): User? {
-        TODO("Not yet implemented")
+        return repository.findByUsername(username)?.to()
     }
 
     override fun findById(id: UserId): User? {
-        TODO("Not yet implemented")
+        return repository.findByIdOrNull(id.value)?.to()
     }
 }

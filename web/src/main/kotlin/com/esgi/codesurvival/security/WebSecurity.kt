@@ -28,8 +28,9 @@ open class WebSecurity(
     override fun configure(http: HttpSecurity) {
         http.csrf().disable().cors().and()
             .authorizeRequests()
-            .antMatchers("/accounts/registration").permitAll()
-            .antMatchers("/accounts/authentication").permitAll()
+            .antMatchers("/users/registration").permitAll()
+            .antMatchers("/users").permitAll()
+            .antMatchers("/users/authentication").permitAll()
             .antMatchers(
                     "/v2/api-docs",
                     "/configuration/ui",
@@ -44,7 +45,6 @@ open class WebSecurity(
 
     @Throws(Exception::class)
     public override fun configure(auth: AuthenticationManagerBuilder) {
-//        auth.userDetailsService<UserDetailsService>(userDetailsService).passwordEncoder(bCryptPasswordEncoder)
         auth.authenticationProvider(authProvider)
     }
 
@@ -55,10 +55,6 @@ open class WebSecurity(
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-//        val source = UrlBasedCorsConfigurationSource()
-//        source.registerCorsConfiguration("/**", )
-//        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
-
         val configuration = CorsConfiguration().applyPermitDefaultValues()
         configuration.allowedMethods = HttpMethod.values().map { it.toString() }
         configuration.addExposedHeader(HttpHeaders.CONTENT_LENGTH)
