@@ -7,7 +7,7 @@ import javax.persistence.*
 
 
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 class UserEntity (
     @Id
     @Type(type = "uuid-char")

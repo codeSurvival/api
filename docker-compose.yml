@@ -1,8 +1,23 @@
 version: "3.1"
 
 services:
+  code-survival-api:
+    container_name: code-survival-api
+    restart: unless-stopped
+    image: codesurvival/api
+    depends_on:
+      - code-survival-postgres
+    working_dir: /app
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    env_file:
+      - ./application.env
+    ports:
+      - 8081:8081
+
   code-survival-postgres:
-    container_name: "codesurvival"
+    container_name: "code-survival-postgres"
     image: postgres
     user: postgres
     restart: unless-stopped

@@ -19,7 +19,7 @@ class RegisterUserCommandHandler @Autowired constructor(
 ) :
     RequestHandler<UserRegisterCommand, UserId> {
     override fun handle(request: UserRegisterCommand): UserId {
-
+        print(request)
         val existingAccounts = repository.findAll()
 
         val newAccount = User(
