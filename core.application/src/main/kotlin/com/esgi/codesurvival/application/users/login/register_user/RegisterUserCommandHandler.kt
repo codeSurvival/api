@@ -1,4 +1,4 @@
-package com.esgi.codesurvival.application.users.queries.register_user;
+package com.esgi.codesurvival.application.users.login.register_user;
 
 import com.esgi.codesurvival.application.contracts.services.IHashingService
 import com.esgi.codesurvival.application.security.ApplicationException
