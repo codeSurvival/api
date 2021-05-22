@@ -29,7 +29,6 @@ open class WebSecurity(
         http.csrf().disable().cors().and()
             .authorizeRequests()
             .antMatchers("/users/registration").permitAll()
-            .antMatchers("/users").permitAll()
             .antMatchers("/users/authentication").permitAll()
             .antMatchers(
                     "/v2/api-docs",

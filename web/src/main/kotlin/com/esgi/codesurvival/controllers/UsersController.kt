@@ -1,12 +1,15 @@
 package com.esgi.codesurvival.controllers
 
 import com.esgi.codesurvival.application.security.ApplicationException
+import com.esgi.codesurvival.application.security.parse_token.ParseTokenQuery
 import com.esgi.codesurvival.application.users.login.login_user.ConnectedUser
 import com.esgi.codesurvival.application.users.login.login_user.LoginUserCommand
 import com.esgi.codesurvival.application.users.queries.UserResume
 import com.esgi.codesurvival.application.users.queries.get_user_by_id.GetUserByIdQuery
 import com.esgi.codesurvival.application.users.login.register_user.UserRegisterCommand
+import com.esgi.codesurvival.application.users.queries.get_user_by_username.GetUserByUsernameQuery
 import io.jkratz.mediator.core.Mediator
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -22,15 +25,6 @@ class UsersController(private val mediator: Mediator) {
         return true
     }
 
-    @GetMapping("{id}")
-    fun getById(@PathVariable id: UUID) : ResponseEntity<UserResume> {
-        return try {
-            ResponseEntity.ok(mediator.dispatch(GetUserByIdQuery(id)))
-        } catch (e: ApplicationException) {
-            ResponseEntity.notFound().build()
-        }
-    }
-
     @PostMapping("registration")
     fun register(@RequestBody user: UserRegisterCommand): ResponseEntity<Unit> {
         return try {
@@ -40,7 +34,7 @@ class UsersController(private val mediator: Mediator) {
                     .build().toUri()
             return ResponseEntity.created(uri).build()
         } catch (e: ApplicationException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).build()
+            return ResponseEntity.status(HttpStatus.CONFLICT).build()
         }
     }
 
@@ -52,4 +46,30 @@ class UsersController(private val mediator: Mediator) {
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("me")
+    fun getMe(@RequestHeader headers : HttpHeaders) : ResponseEntity<UserResume> {
+        try {
+
+            val token = headers.getFirst(HttpHeaders.AUTHORIZATION)
+
+            token?.let{
+                val username = mediator.dispatch(ParseTokenQuery(it))
+                return ResponseEntity.ok(mediator.dispatch(GetUserByUsernameQuery(username)))
+            }
+            return ResponseEntity.badRequest().build()
+
+        } catch (e: ApplicationException) {
+            return ResponseEntity.notFound().build()
+        }
+    }
+/*
+    @GetMapping("{id}")
+    fun getById(@PathVariable id: UUID) : ResponseEntity<UserResume> {
+        return try {
+            ResponseEntity.ok(mediator.dispatch(GetUserByIdQuery(id)))
+        } catch (e: ApplicationException) {
+            ResponseEntity.notFound().build()
+        }
+    }*/
 }
