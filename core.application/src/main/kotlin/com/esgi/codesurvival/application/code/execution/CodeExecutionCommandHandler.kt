@@ -20,8 +20,12 @@ class CodeExecutionCommandHandler(private val userRepository: IUsersRepository) 
         val runner: Runner
 
         if (request.language == "JS") {
-            runner = JavascriptRunner()
-            return runner.run(Code(request.code))
+            //runner = JavascriptRunner()
+            //return runner.run(Code(request.code))
+        }
+
+        if (request.language == "KT") {
+            // something
         }
 
         throw ApplicationException("Language not supported")

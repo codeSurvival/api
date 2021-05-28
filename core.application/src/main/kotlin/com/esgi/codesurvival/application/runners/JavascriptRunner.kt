@@ -12,7 +12,7 @@ class JavascriptRunner : Runner {
         val scriptEngineManager = ScriptEngineManager()
         val engine = scriptEngineManager.getEngineByName("js")
         try {
-            engine.eval(code.value)
+            engine.eval(code.toString())
             val returnValue = engine["output"] as Int
             println("output: $returnValue")
             output.returnValue = "output: $returnValue"
