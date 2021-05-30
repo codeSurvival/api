@@ -32,9 +32,9 @@ class UsersController(private val mediator: Mediator) {
             val uri =
                 MvcUriComponentsBuilder.fromMethodName(UsersController::class.java, "getById", created.value.toString())
                     .build().toUri()
-            return ResponseEntity.created(uri).build()
+            ResponseEntity.created(uri).build()
         } catch (e: ApplicationException) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build()
+            ResponseEntity.status(HttpStatus.CONFLICT).build()
         }
     }
 
@@ -50,7 +50,6 @@ class UsersController(private val mediator: Mediator) {
     @GetMapping("me")
     fun getMe(@RequestHeader headers : HttpHeaders) : ResponseEntity<UserResume> {
         try {
-
             val token = headers.getFirst(HttpHeaders.AUTHORIZATION)
 
             token?.let{
@@ -63,7 +62,7 @@ class UsersController(private val mediator: Mediator) {
             return ResponseEntity.notFound().build()
         }
     }
-/*
+
     @GetMapping("{id}")
     fun getById(@PathVariable id: UUID) : ResponseEntity<UserResume> {
         return try {
@@ -71,5 +70,5 @@ class UsersController(private val mediator: Mediator) {
         } catch (e: ApplicationException) {
             ResponseEntity.notFound().build()
         }
-    }*/
+    }
 }
