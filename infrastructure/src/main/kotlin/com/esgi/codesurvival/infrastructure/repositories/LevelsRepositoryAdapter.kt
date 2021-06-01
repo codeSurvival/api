@@ -6,6 +6,7 @@ import com.esgi.codesurvival.infrastructure.mappers.to
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class LevelsRepositoryAdapter @Autowired constructor(
@@ -48,5 +49,10 @@ class LevelsRepositoryAdapter @Autowired constructor(
         }
 
         return savedLevel
+    }
+
+    override fun findByConstraintId(constraintId: UUID): Level? {
+        val constraint = constraintRepository.findByIdOrNull(constraintId) ?: return null
+        return this.findById(constraint.levelId)
     }
 }
