@@ -7,4 +7,5 @@ data class UserResume(
     val id: UUID,
     val email: String,
     val role: Role,
-    val username: String)
+    val username: String,
+    val level: Int)

@@ -5,7 +5,8 @@ class User (
     val username: String,
     val email: String,
     val password: String,
-    var role: Role = Role.USER
+    var role: Role = Role.USER,
+    var level : Int
 ) {
 
     fun isUnique( accounts : List<User>) : Boolean {

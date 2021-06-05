@@ -1,5 +1,7 @@
 package com.esgi.codesurvival.domain.code
 
+import com.esgi.codesurvival.domain.level.Constraint
+
 class Code (val algorithm: Algorithm, val player: Player) {
 
 

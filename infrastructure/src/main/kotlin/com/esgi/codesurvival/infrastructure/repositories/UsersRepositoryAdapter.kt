@@ -24,7 +24,8 @@ class UsersRepositoryAdapter @Autowired constructor(private val repository: User
                 username = user.username,
                 email = user.email,
                 password = user.password,
-                role = user.role
+                role = user.role,
+                level = user.level
             ))
                 .id
         )

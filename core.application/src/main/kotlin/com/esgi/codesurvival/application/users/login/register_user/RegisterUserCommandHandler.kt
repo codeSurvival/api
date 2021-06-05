@@ -25,7 +25,8 @@ class RegisterUserCommandHandler @Autowired constructor(
             id = repository.getNewId(),
             username = request.username,
             email = request.email,
-            password = hashingService.hashPassword(request.password)
+            password = hashingService.hashPassword(request.password),
+            level = 1
         )
 
         newAccount.setRole(existingAccounts)

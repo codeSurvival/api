@@ -10,4 +10,5 @@ interface ILevelRepository {
     fun findById(id: Int) : Level?
     fun findCompleteById(id: Int): Level?
     fun findByConstraintId(id: UUID) : Level?
+    fun findCompleteByConstraintId(constraintId: UUID): Level?
 }

@@ -25,7 +25,7 @@ class AddRegexCommandHandler @Autowired constructor(
     override fun handle(request: CreateRegexCommand): UUID {
 
         val existingLanguage = languageRepository.findById(request.languageId) ?: throw ApplicationException("Language not found")
-        val existingLevel = levelRepository.findByConstraintId(request.constraintId) ?: throw ApplicationException("Constraint or Level not found")
+        val existingLevel = levelRepository.findCompleteByConstraintId(request.constraintId) ?: throw ApplicationException("Constraint or Level not found")
 
         val newRegex = Regex(
             regexRepository.getNextId(),

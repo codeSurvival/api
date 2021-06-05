@@ -55,4 +55,10 @@ class LevelsRepositoryAdapter @Autowired constructor(
         val constraint = constraintRepository.findByIdOrNull(constraintId) ?: return null
         return this.findById(constraint.levelId)
     }
+
+
+    override fun findCompleteByConstraintId(constraintId: UUID): Level? {
+        val constraint = constraintRepository.findByIdOrNull(constraintId) ?: return null
+        return findCompleteById(constraint.levelId)
+    }
 }

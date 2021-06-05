@@ -20,7 +20,8 @@ class GetUserByUsernameQueryHandler @Autowired constructor(private val repositor
                 it.id.value,
                 it.email,
                 it.role,
-                it.username)
+                it.username,
+                it.level)
         }
 
         throw ApplicationException("User not found")

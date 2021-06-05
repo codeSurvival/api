@@ -1,5 +1,7 @@
 package com.esgi.codesurvival.domain.code
 
-class Player(val username: String,val level: Level) {
+import com.esgi.codesurvival.domain.level.Level
+
+class Player(val username: String, val level: Level) {
 
 }

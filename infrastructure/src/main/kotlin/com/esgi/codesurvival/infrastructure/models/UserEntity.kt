@@ -17,5 +17,7 @@ class UserEntity (
     @Column(name = "password") var password: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role") var role: Role
+    @Column(name = "role") var role: Role,
+
+    @Column(name = "level", columnDefinition = "integer default 1" ) var level: Int
 )

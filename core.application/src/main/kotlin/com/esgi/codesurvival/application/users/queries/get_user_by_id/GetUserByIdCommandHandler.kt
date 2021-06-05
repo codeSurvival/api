@@ -21,6 +21,7 @@ class GetUserByIdCommandHandler(private val repository: IUsersRepository) :
                 username = it.username,
                 email = it.email,
                 role = it.role,
+                level = it.level
             )
         }
 

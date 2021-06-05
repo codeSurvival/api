@@ -1,11 +1,9 @@
 package com.esgi.codesurvival.application.levels.add_constraint
 
-import com.esgi.codesurvival.application.levels.create_level.CreateLevelCommand
 import com.esgi.codesurvival.application.levels.repositories.IConstraintsRepository
 import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
 import com.esgi.codesurvival.application.security.ApplicationException
 import com.esgi.codesurvival.domain.level.Constraint
-import com.esgi.codesurvival.domain.level.Level
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
