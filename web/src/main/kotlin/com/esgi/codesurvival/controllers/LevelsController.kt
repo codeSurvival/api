@@ -3,6 +3,11 @@ package com.esgi.codesurvival.controllers
 import com.esgi.codesurvival.application.levels.add_constraint.CreateConstraintCommand
 import com.esgi.codesurvival.application.levels.add_regex.CreateRegexCommand
 import com.esgi.codesurvival.application.levels.create_level.CreateLevelCommand
+import com.esgi.codesurvival.application.levels.queries.LightLevel
+import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetCompleteLevelByIdQuery
+import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetLevelByIdQuery
+import com.esgi.codesurvival.application.security.ApplicationException
+import com.esgi.codesurvival.application.users.queries.UserResume
 import com.esgi.codesurvival.dtos.CreateConstraintDTO
 import com.esgi.codesurvival.dtos.CreateRegexDTO
 import io.jkratz.mediator.core.Mediator
@@ -28,9 +33,21 @@ class LevelsController(private val mediator: Mediator) {
     }
 
     @GetMapping("{id}")
-    fun getById(@PathVariable id: Int)  {
-
+    fun getById(@PathVariable id: Int, @RequestParam complete : Int? ) : ResponseEntity<Any>   {
+        return try {
+            if( complete == 0 || complete == null) {
+                ResponseEntity.ok(mediator.dispatch(GetLevelByIdQuery(id)))
+            } else if (complete == 1) {
+                ResponseEntity.ok(mediator.dispatch(GetCompleteLevelByIdQuery(id)))
+            } else {
+                ResponseEntity.badRequest().build()
+            }
+        } catch(e : ApplicationException) {
+            ResponseEntity.notFound().build()
+        }
     }
+
+
     @PostMapping("{level_id}/constraints")
     fun createConstraint(@PathVariable level_id: Int, @RequestBody constraint: CreateConstraintDTO): ResponseEntity<Unit> {
         return try{
