@@ -25,7 +25,7 @@ class LevelsController(private val mediator: Mediator) {
     fun create(@RequestBody level: CreateLevelCommand): ResponseEntity<Unit> {
         return try{
             val created = mediator.dispatch(level)
-            val uri = MvcUriComponentsBuilder.fromMethodName(LevelsController::class.java, "getById", created.toString()).build().toUri()
+            val uri = MvcUriComponentsBuilder.fromMethodName(LevelsController::class.java, "getById", created.toString(), 1).build().toUri()
             return ResponseEntity.created(uri).build()
         } catch (e: Exception){
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
