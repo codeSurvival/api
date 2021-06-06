@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.5"
 
 services:
   code-survival-api:
@@ -31,10 +31,19 @@ services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
-    volumes:
-      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
-      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+    hostname: rabbitmq
     ports:
       - 5672:5672
       - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_go_net
+      - my-network-name
+
+networks:
+  my-network-name:
+    name: my-global-net
+  rabbitmq_go_net:
+      driver: bridge
