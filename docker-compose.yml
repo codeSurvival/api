@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.9"
 
 services:
   code-survival-api:
@@ -15,6 +15,8 @@ services:
       - ./application.env
     ports:
       - 8081:8081
+    networks:
+      - setted-network
 
   code-survival-postgres:
     container_name: "code-survival-postgres"
@@ -27,6 +29,8 @@ services:
       - "5433:5432"
     volumes:
       - ./postgres:/var/lib/postgresql/data
+    networks:
+      - setted-network
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -39,11 +43,11 @@ services:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
+      - setted-network
       - rabbitmq_go_net
-      - my-network-name
 
 networks:
-  my-network-name:
-    name: my-global-net
+  setted-network:
+    name: setted-network
   rabbitmq_go_net:
       driver: bridge
