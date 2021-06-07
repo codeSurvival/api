@@ -8,6 +8,7 @@ import com.esgi.codesurvival.application.users.queries.UserResume
 import com.esgi.codesurvival.application.users.queries.get_user_by_id.GetUserByIdQuery
 import com.esgi.codesurvival.application.users.login.register_user.UserRegisterCommand
 import com.esgi.codesurvival.application.users.queries.get_user_by_username.GetUserByUsernameQuery
+import com.esgi.codesurvival.application.users.queries.get_users.GetUsersQuery
 import io.jkratz.mediator.core.Mediator
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -21,8 +22,13 @@ import java.util.*
 class UsersController(private val mediator: Mediator) {
 
     @GetMapping
-    fun get(): Boolean {
-        return true
+    fun getAll(@RequestHeader headers : HttpHeaders) : ResponseEntity<List<UserResume>> {
+
+        return try {
+            ResponseEntity.ok(mediator.dispatch(GetUsersQuery()))
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
 
     @PostMapping("registration")
