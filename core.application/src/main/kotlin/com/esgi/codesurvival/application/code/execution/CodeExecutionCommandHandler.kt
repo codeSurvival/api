@@ -38,9 +38,10 @@ class CodeExecutionCommandHandler(
 
         val compilator = compilatorFactory.get(language)
 
-        val path = compilator.buildEntrypoint()
-        compilator.compileAndExecute(path)
-        compilator.clean(path)
+        val compilatorPaths = compilator.buildEntrypoint()
+        compilator.addUserCode(codeToTest.algorithm.code, compilatorPaths)
+        compilator.compileAndExecute(compilatorPaths)
+        compilator.clean(compilatorPaths)
 
 
         return result.to()

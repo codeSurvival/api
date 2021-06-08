@@ -16,6 +16,9 @@ class KotlinCompilator : Compilator {
     private val pdkTemplate = File("$appRoot/$kotlinCompilatorPath/empty-pdk")
     private val gradleSettingsTemplate = File("$appRoot/$kotlinCompilatorPath/example.gradle")
 
+    private val defaultBodyMobBehavior = "return MobAction(ActionType.WALK, Direction.UP)"
+    private val mobBehaviorPath = "src/main/kotlin/com/esgi/kotlin_game/pdk_test/MobBehavior.kt"
+
     override fun compileAndExecute(compilatorPaths: CompilatorPaths) {
         ("gradle kotlin-compiler:${compilatorPaths.moduleName}:build -c ${compilatorPaths.settingsGradleFileName}")
             .runCommand(File(appRoot))
@@ -68,5 +71,15 @@ class KotlinCompilator : Compilator {
         )
 
         return directoryName
+    }
+
+    override fun addUserCode(userCode: String, compilatorPaths: CompilatorPaths) {
+        val fileToModify = File("$appRoot/$kotlinCompilatorPath/${compilatorPaths.moduleName}/$mobBehaviorPath")
+
+        var mobBehaviorFileContent = fileToModify.readText()
+        var fileContent = mobBehaviorFileContent.replace(defaultBodyMobBehavior, userCode)
+
+        println(fileContent)
+        fileToModify.writeText(fileContent)
     }
 }
