@@ -79,7 +79,6 @@ class KotlinCompilator : Compilator {
         var mobBehaviorFileContent = fileToModify.readText()
         var fileContent = mobBehaviorFileContent.replace(defaultBodyMobBehavior, userCode)
 
-        println(fileContent)
         fileToModify.writeText(fileContent)
     }
 }
