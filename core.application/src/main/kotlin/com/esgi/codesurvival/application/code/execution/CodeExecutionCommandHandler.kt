@@ -1,5 +1,6 @@
 package com.esgi.codesurvival.application.code.execution
 
+import com.esgi.codesurvival.application.code.execution.compilator.CompilatorFactory
 import com.esgi.codesurvival.application.languages.repositories.ILanguagesRepository
 import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
 import com.esgi.codesurvival.application.security.ApplicationException
@@ -19,7 +20,8 @@ class CodeExecutionCommand(var code: String, var language: UUID, var username: S
 class CodeExecutionCommandHandler(
     private val userRepository: IUsersRepository,
     private val levelRepository: ILevelRepository,
-    private val languageRepository: ILanguagesRepository
+    private val languageRepository: ILanguagesRepository,
+    private val compilatorFactory: CompilatorFactory
 ) :
     RequestHandler<CodeExecutionCommand, CodeOutput> {
     override fun handle(request: CodeExecutionCommand): CodeOutput {
@@ -29,6 +31,19 @@ class CodeExecutionCommandHandler(
         val player = Player(user.username, level)
         val codeToTest = Code(Algorithm(request.code, language), player)
         val result = codeToTest.validate()
+
+        if(!result.success) {
+            return result.to()
+        }
+
+        val compilator = compilatorFactory.get(language)
+
+        val compilatorPaths = compilator.buildEntrypoint()
+        compilator.addUserCode(codeToTest.algorithm.code, compilatorPaths)
+        compilator.compileAndExecute(compilatorPaths)
+        compilator.clean(compilatorPaths)
+
+
         return result.to()
     }
 }
