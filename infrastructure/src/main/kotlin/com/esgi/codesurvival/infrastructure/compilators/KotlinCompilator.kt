@@ -26,7 +26,7 @@ class KotlinCompilator : Compilator {
 
         ("docker run --rm --env-file .env --network setted-network " +
                 "--mount type=bind,source=$appRoot/$kotlinCompilatorPath/${compilatorPaths.moduleName}/build/libs,target=/app/plugins" +
-                " --name kokuu30 kotlin-game/api").runCommand(File(appRoot))
+                " --name ${compilatorPaths.moduleName} kotlin-game/api").runCommand(File(appRoot))
     }
 
     override fun buildEntrypoint(): CompilatorPaths {
@@ -54,7 +54,7 @@ class KotlinCompilator : Compilator {
             overwrite = true
         )
 
-        val newGradleFile = File("$directoryPath")
+        val newGradleFile = File(directoryPath)
         newGradleFile.appendText("include(\":$kotlinCompilatorPath:$newModuleName\")")
 
         return newGradleName
