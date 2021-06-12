@@ -18,9 +18,12 @@ import org.springframework.context.annotation.Configuration
 @EnableAutoConfiguration
 @ComponentScan
 class RabbitConfiguration {
-    val topicExchangeName = "spring-boot-exchange"
+    companion object {
+        final val topicExchangeName = "spring-boot-exchange"
 
-    val queueName = "test_queue"
+        val queueName = "test_queue"
+    }
+
 
     @Bean
     fun queue(): Queue? {
@@ -50,9 +53,8 @@ class RabbitConfiguration {
     }
 
     @Bean
-    fun listenerAdapter(@Autowired receiver: Receiver?): MessageListenerAdapter? {
-        println("oui oui oui")
-        return MessageListenerAdapter(receiver, "receiveMessage")
+    fun listenerAdapter(@Autowired receiver: GameEventReceiver?): MessageListenerAdapter? {
+        return MessageListenerAdapter(receiver, "consume")
     }
 }
 

@@ -37,4 +37,5 @@ dependencies {
 
     // broker de messages
     implementation ("io.jkratz.springmediatr:spring-mediatr:1.1-RELEASE")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.8.+")
 }
