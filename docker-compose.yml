@@ -48,6 +48,15 @@ services:
       - setted-network
       - rabbitmq_go_net
 
+  kotlin-compiler:
+    container_name: kotlin-compile
+    image: kotlin-compiler/api
+    working_dir: /app
+    env_file:
+      - .env
+    networks:
+      - setted-network
+
 networks:
   setted-network:
     name: setted-network
