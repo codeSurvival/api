@@ -7,12 +7,14 @@ services:
     image: codesurvival/api
     depends_on:
       - code-survival-postgres
+      - kotlin-compiler
     working_dir: /app
     build:
       dockerfile: Dockerfile
       context: ./
     env_file:
       - ./application.env
+      - ./.env
     ports:
       - 8081:8081
     volumes:
@@ -49,7 +51,7 @@ services:
       - rabbitmq_go_net
 
   kotlin-compiler:
-    container_name: kotlin-compile
+    container_name: kotlin-compiler
     image: kotlin-compiler/api
     working_dir: /app
     env_file:
