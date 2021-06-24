@@ -54,6 +54,9 @@ services:
     working_dir: /app
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /Users/simonhalimi/Development/2021/projets/jee/code-survival/plugins:/app/plugins
+    environment:
+      - HOME_PLUGINS=/Users/simonhalimi/Development/2021/projets/jee/code-survival/plugins
     env_file:
       - .env
     networks:
