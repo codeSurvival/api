@@ -1,8 +1,13 @@
 package com.esgi.codesurvival.infrastructure.repositories
 
 import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
+import com.esgi.codesurvival.domain.code.LevelConstraint
 import com.esgi.codesurvival.domain.level.Level
 import com.esgi.codesurvival.infrastructure.mappers.to
+import com.esgi.codesurvival.infrastructure.mappers.toRegex
+import com.esgi.codesurvival.infrastructure.mappers.toConstraint
+import com.esgi.codesurvival.infrastructure.mappers.toConstraintRegex
+import com.esgi.codesurvival.infrastructure.mappers.toLevelConstraint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -38,12 +43,12 @@ class LevelsRepositoryAdapter @Autowired constructor(
     override fun findCompleteById(id: Int): Level? {
         val savedLevel = levelRepository.findByIdOrNull(id)?.to() ?: return null
 
-        val savedConstraints = constraintRepository.findByLevelId(savedLevel.ordinalValue).map { it.to() }
+        val savedConstraints = constraintRepository.findByLevelId(savedLevel.ordinalValue).map { it.toConstraint() }
         for (constraintModel in savedConstraints) {
             val savedRegexes = regexesRepository.findByConstraintId(constraintModel.id)
             for (savedRegex in savedRegexes) {
                 val savedLanguage = languagesRepository.findByIdOrNull(savedRegex.languageId)
-                constraintModel.regexes.add(savedRegex.to(savedLanguage!!.to())) // sorry
+                constraintModel.regexes.add(savedRegex.toRegex(savedLanguage!!.to())) // sorry
             }
             savedLevel.constraints.add(constraintModel)
         }
@@ -51,8 +56,8 @@ class LevelsRepositoryAdapter @Autowired constructor(
         return savedLevel
     }
 
-    override fun findByConstraintId(constraintId: UUID): Level? {
-        val constraint = constraintRepository.findByIdOrNull(constraintId) ?: return null
+    override fun findByConstraintId(id: UUID): Level? {
+        val constraint = constraintRepository.findByIdOrNull(id) ?: return null
         return this.findById(constraint.levelId)
     }
 
@@ -60,5 +65,19 @@ class LevelsRepositoryAdapter @Autowired constructor(
     override fun findCompleteByConstraintId(constraintId: UUID): Level? {
         val constraint = constraintRepository.findByIdOrNull(constraintId) ?: return null
         return findCompleteById(constraint.levelId)
+    }
+
+    override fun findAllConstraintsByLevelId(level: Int): List<LevelConstraint> {
+        levelRepository.findByIdOrNull(level)?.to() ?: return mutableListOf()
+
+        val savedConstraints =  constraintRepository.findAllByLevelIdGreaterThanEqual(level).map { it.toLevelConstraint() }
+        for (constraint in savedConstraints) {
+            val savedRegexes = regexesRepository.findByConstraintId(constraint.constraintId)
+            for (savedRegex in savedRegexes) {
+                constraint.regexes.add(savedRegex.toConstraintRegex())
+            }
+        }
+
+        return savedConstraints
     }
 }

@@ -2,7 +2,7 @@ package com.esgi.codesurvival.infrastructure.repositories
 
 import com.esgi.codesurvival.application.levels.repositories.IConstraintsRepository
 import com.esgi.codesurvival.domain.level.Constraint
-import com.esgi.codesurvival.infrastructure.mappers.to
+import com.esgi.codesurvival.infrastructure.mappers.toConstraint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -17,7 +17,7 @@ class ConstraintRepositoryAdapter @Autowired constructor(
     }
 
     override fun findById(id: UUID): Constraint? {
-        return constraintsRepository.findByIdOrNull(id)?.to()
+        return constraintsRepository.findByIdOrNull(id)?.toConstraint()
     }
 
 

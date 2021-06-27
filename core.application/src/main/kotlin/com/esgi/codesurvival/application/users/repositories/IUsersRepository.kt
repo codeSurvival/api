@@ -1,7 +1,9 @@
 package com.esgi.codesurvival.application.users.repositories
 
+import com.esgi.codesurvival.domain.code.Algorithm
 import com.esgi.codesurvival.domain.user.User
 import com.esgi.codesurvival.domain.user.UserId
+import java.util.*
 
 interface IUsersRepository {
 
@@ -14,5 +16,4 @@ interface IUsersRepository {
     fun findByUsername(username: String): User?
 
     fun findById(id : UserId): User?
-
 }

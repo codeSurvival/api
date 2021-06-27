@@ -8,6 +8,5 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @EnableSwagger2
 class CodeSurvivalApplication
 fun main(args: Array<String>) {
-    println("doggo")
     runApplication<CodeSurvivalApplication>(*args)
 }

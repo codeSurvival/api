@@ -9,4 +9,6 @@ import java.util.*
 interface ConstraintsRepository : JpaRepository<ConstraintEntity, UUID> {
 
     fun findByLevelId(levelId : Int) : List<ConstraintEntity>
+
+    fun findAllByLevelIdGreaterThanEqual(levelId: Int) : List<ConstraintEntity>
 }

@@ -4,7 +4,6 @@ import com.esgi.codesurvival.domain.level.Language
 import com.esgi.codesurvival.domain.level.Regex
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.springframework.util.Assert
 import java.util.*
 
 class ConstraintTest {

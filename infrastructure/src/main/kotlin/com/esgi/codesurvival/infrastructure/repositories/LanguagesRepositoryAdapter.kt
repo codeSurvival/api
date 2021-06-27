@@ -2,7 +2,6 @@ package com.esgi.codesurvival.infrastructure.repositories
 
 import com.esgi.codesurvival.application.languages.repositories.ILanguagesRepository
 import com.esgi.codesurvival.domain.level.Language
-import com.esgi.codesurvival.domain.user.User
 import com.esgi.codesurvival.infrastructure.mappers.to
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
