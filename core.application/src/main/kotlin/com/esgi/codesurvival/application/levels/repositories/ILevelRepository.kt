@@ -6,6 +6,7 @@ import java.util.*
 
 
 interface ILevelRepository {
+    fun findAll(): List<Level>
     fun save(level: Level): Int
     fun getNextId(): Int
     fun findById(id: Int) : Level?

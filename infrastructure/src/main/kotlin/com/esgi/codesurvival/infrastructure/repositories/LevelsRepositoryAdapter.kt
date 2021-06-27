@@ -21,6 +21,10 @@ class LevelsRepositoryAdapter @Autowired constructor(
     private val languagesRepository: LanguagesRepository
     ) : ILevelRepository {
 
+    override fun findAll(): List<Level> {
+        return levelRepository.findAll().map { it.to() }
+    }
+
     override fun save(level: Level): Int {
         levelRepository.save(level.to())
         level.constraints.forEach { constraintModel ->

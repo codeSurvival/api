@@ -6,11 +6,14 @@ import com.esgi.codesurvival.application.levels.create_level.CreateLevelCommand
 import com.esgi.codesurvival.application.levels.queries.LightLevel
 import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetCompleteLevelByIdQuery
 import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetLevelByIdQuery
+import com.esgi.codesurvival.application.levels.queries.get_levels.GetLevelsQuery
 import com.esgi.codesurvival.application.security.ApplicationException
 import com.esgi.codesurvival.application.users.queries.UserResume
+import com.esgi.codesurvival.application.users.queries.get_users.GetUsersQuery
 import com.esgi.codesurvival.dtos.CreateConstraintDTO
 import com.esgi.codesurvival.dtos.CreateRegexDTO
 import io.jkratz.mediator.core.Mediator
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -20,6 +23,15 @@ import java.util.*
 @RestController
 @RequestMapping("levels")
 class LevelsController(private val mediator: Mediator) {
+
+    @GetMapping
+    fun getAll(@RequestHeader headers : HttpHeaders) : ResponseEntity<List<LightLevel>> {
+        return try {
+            ResponseEntity.ok(mediator.dispatch(GetLevelsQuery()))
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+    }
 
     @PostMapping
     fun create(@RequestBody level: CreateLevelCommand): ResponseEntity<Unit> {

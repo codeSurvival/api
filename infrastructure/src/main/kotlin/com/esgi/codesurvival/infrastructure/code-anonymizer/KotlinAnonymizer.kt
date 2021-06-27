@@ -48,13 +48,12 @@ class KotlinAnonymizer : Anonymizer {
             declarations.addAll(this.cleanDeclarationMatches(matches))
         }
 
+        var anonymizedCode = userCode
+
         declarations.forEach { declaration ->
-            declaration.replace(userCode, "_")
+            anonymizedCode = declaration.replace(userCode, "_")
         }
-
-
-
-        return userCode
+        return anonymizedCode
     }
 
     private fun cleanDeclarationMatches(matches: Sequence<MatchResult>): List<Regex> {
