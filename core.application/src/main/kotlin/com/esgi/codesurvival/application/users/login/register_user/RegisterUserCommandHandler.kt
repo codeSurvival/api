@@ -26,7 +26,8 @@ class RegisterUserCommandHandler @Autowired constructor(
             username = request.username,
             email = request.email,
             password = hashingService.hashPassword(request.password),
-            level = 1
+            level = 1,
+            lastCodeId = null
         )
 
         newAccount.setRole(existingAccounts)

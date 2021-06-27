@@ -1,6 +1,5 @@
 package com.esgi.codesurvival.controllers
 
-import com.esgi.codesurvival.application.languages.create_language.CreateLanguageCommand
 import com.esgi.codesurvival.application.languages.queries.GetAllLanguagesQuery
 import com.esgi.codesurvival.application.languages.queries.LanguageResponseDTO
 import com.esgi.codesurvival.application.users.queries.get_user_by_username.GetUserByUsernameQuery
@@ -16,16 +15,7 @@ import java.util.*
 @RequestMapping("languages")
 class LanguagesController(private val mediator : Mediator) {
 
-    @PostMapping
-    fun create(@RequestBody level: CreateLanguageCommand): ResponseEntity<Unit> {
-        return try{
-            val created = mediator.dispatch(level)
-            val uri = MvcUriComponentsBuilder.fromMethodName(LanguagesController::class.java, "getById", created.toString()).build().toUri()
-            return ResponseEntity.created(uri).build()
-        } catch (e: Exception){
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
-        }
-    }
+
 
     @GetMapping("{id}")
     fun getById(@PathVariable id: UUID)  {
