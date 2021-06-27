@@ -41,13 +41,15 @@ class KotlinAnonymizer : Anonymizer {
 
     override fun anonymize(userCode: String): String {
 
-        val declarations = mutableListOf<String>()
+        val declarations = mutableListOf<Regex>()
 
         variableDeclarationPatterns.forEach { regex ->
             val matches = regex.findAll(userCode)
             declarations.addAll(this.cleanDeclarationMatches(matches))
+        }
 
-
+        declarations.forEach { declaration ->
+            declaration.replace(userCode, "_")
         }
 
 
@@ -55,12 +57,12 @@ class KotlinAnonymizer : Anonymizer {
         return userCode
     }
 
-    private fun cleanDeclarationMatches(matches: Sequence<MatchResult>): List<String> {
-        val output = mutableListOf<String>()
+    private fun cleanDeclarationMatches(matches: Sequence<MatchResult>): List<Regex> {
+        val output = mutableListOf<Regex>()
 
         for(match in matches) {
-            val shortenMatch = match.value.subSequence(3, match.value.length-1)
-            output.add(shortenMatch.trim() as String)
+            val shortenMatch = match.value.subSequence(3, match.value.length-1).toString()
+            output.add(Regex(shortenMatch.trim()))
         }
 
         return output

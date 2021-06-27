@@ -33,7 +33,7 @@ class CodeExecutionCommandHandler(
 ) :
     RequestHandler<CodeExecutionCommand, CodeOutput> {
     override fun handle(request: CodeExecutionCommand): CodeOutput {
-        val returnData : CodeOutput
+        var returnData = CodeOutput(true, mutableListOf(), true)
 
         val submittedAlgorithm = Algorithm(request.code, request.languageId)
 
@@ -43,7 +43,8 @@ class CodeExecutionCommandHandler(
         val codeToTest = Code( submittedAlgorithm, player)
         val rulesResult = codeToTest.validate()
 
-        returnData = rulesResult.to()
+        returnData.rulesSuccess = rulesResult.success
+        returnData.failedConstraints = rulesResult.failedConstraints.map{ it.to() }
 
         if(!rulesResult.success) {
             return returnData
@@ -60,7 +61,6 @@ class CodeExecutionCommandHandler(
                 returnData.similaritySuccess = false
                 return returnData
             }
-            returnData.similaritySuccess = true
         }
 
         val codeId = codeRepository.save(submittedAlgorithm)
