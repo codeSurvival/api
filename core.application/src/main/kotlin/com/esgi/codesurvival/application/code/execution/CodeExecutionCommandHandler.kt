@@ -70,9 +70,10 @@ class CodeExecutionCommandHandler(
 //        val anonymizer = anonymizerFactory.get(language) // TODO : use
 
         val language = languageRepository.findById(request.languageId) ?: throw ApplicationException("Language not found")
+        val userLevel = levelRepository.findById(user.level) ?: throw ApplicationException("level not found")
 
         codeEmitterFactory.get(language)
-            .emitToRunner(codeToTest.algorithm.code)
+            .emitToRunner(codeToTest.algorithm.code, user.id, userLevel.turnObjective)
 
         return returnData
     }
