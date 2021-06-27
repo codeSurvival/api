@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan
 class RabbitConfiguration {
     companion object {
         final val topicExchangeName = "spring-boot-exchange"
