@@ -1,11 +1,12 @@
 package com.esgi.codesurvival.application.code.execution
 
 import com.esgi.codesurvival.application.code.execution.anonymizer.AnonymizerFactory
-import com.esgi.codesurvival.application.code.execution.compilator.CompilatorFactory
 import com.esgi.codesurvival.application.code.repositories.ICodeOwnerRepository
 import com.esgi.codesurvival.application.code.repositories.ICodeRepository
 import com.esgi.codesurvival.application.languages.repositories.ILanguagesRepository
 import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
+import com.esgi.codesurvival.application.rabbit.EmitterFactory
+import com.esgi.codesurvival.application.rabbit.RabbitEmitter
 import com.esgi.codesurvival.application.security.ApplicationException
 import com.esgi.codesurvival.application.users.repositories.IUsersRepository
 import com.esgi.codesurvival.domain.code.Algorithm
@@ -26,9 +27,9 @@ class CodeExecutionCommandHandler(
     private val levelRepository: ILevelRepository,
     private val languageRepository: ILanguagesRepository,
     private val codeRepository: ICodeRepository,
-    private val compilatorFactory: CompilatorFactory,
     private val anonymizerFactory: AnonymizerFactory,
-    private val codeOwnerRepository: ICodeOwnerRepository
+    private val codeOwnerRepository: ICodeOwnerRepository,
+    private val codeEmitterFactory: EmitterFactory
 ) :
     RequestHandler<CodeExecutionCommand, CodeOutput> {
     override fun handle(request: CodeExecutionCommand): CodeOutput {
@@ -62,27 +63,16 @@ class CodeExecutionCommandHandler(
             returnData.similaritySuccess = true
         }
 
-
         val codeId = codeRepository.save(submittedAlgorithm)
-//        user.level += 1
         user.lastCodeId = codeId
         userRepository.save(user)
 
-
-//        val language = languageRepository.findById(request.languageId) ?: throw ApplicationException("Language not found")
-//
 //        val anonymizer = anonymizerFactory.get(language) // TODO : use
-//
-//
-//        val compilator = compilatorFactory.get(language)
-//
-//        val compilatorPaths = compilator.buildEntrypoint()
-//        compilator.addUserCode(codeToTest.algorithm.code, compilatorPaths)
-//        compilator.compileAndExecute(compilatorPaths)
-//        compilator.clean(compilatorPaths)
 
+        val language = languageRepository.findById(request.languageId) ?: throw ApplicationException("Language not found")
 
-
+        codeEmitterFactory.get(language)
+            .emitToRunner(codeToTest.algorithm.code)
 
         return returnData
     }

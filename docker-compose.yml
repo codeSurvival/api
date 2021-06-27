@@ -7,16 +7,16 @@ services:
     image: codesurvival/api
     depends_on:
       - code-survival-postgres
+      - kotlin-compiler
     working_dir: /app
     build:
       dockerfile: Dockerfile
       context: ./
     env_file:
       - ./application.env
+      - ./.env
     ports:
       - 8081:8081
-    volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - setted-network
 
@@ -47,6 +47,20 @@ services:
     networks:
       - setted-network
       - rabbitmq_go_net
+
+  kotlin-compiler:
+    container_name: kotlin-compiler
+    image: kotlin-compiler/api
+    working_dir: /app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /Users/simonhalimi/Development/2021/projets/jee/code-survival/plugins:/app/plugins
+    environment:
+      - HOME_PLUGINS=/Users/simonhalimi/Development/2021/projets/jee/code-survival/plugins
+    env_file:
+      - .env
+    networks:
+      - setted-network
 
 networks:
   setted-network:
