@@ -1,9 +1,12 @@
 package com.esgi.codesurvival.infrastructure.repositories
 
+import com.esgi.codesurvival.application.code.repositories.ICodeOwnerRepository
 import com.esgi.codesurvival.application.users.repositories.IUsersRepository
+import com.esgi.codesurvival.domain.code.Algorithm
 import com.esgi.codesurvival.domain.user.User
 import com.esgi.codesurvival.domain.user.UserId
 import com.esgi.codesurvival.infrastructure.mappers.to
+import com.esgi.codesurvival.infrastructure.models.CodeEntity
 import com.esgi.codesurvival.infrastructure.models.UserEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -12,7 +15,10 @@ import java.util.*
 
 
 @Service
-class UsersRepositoryAdapter @Autowired constructor(private val repository: UsersRepository) : IUsersRepository {
+class UsersRepositoryAdapter @Autowired constructor(
+    private val repository: UsersRepository,
+    private val codeRepository: CodeRepository
+    ) : IUsersRepository, ICodeOwnerRepository {
     override fun findAll(): List<User> {
         return repository.findAll().map { it.to() }
     }
@@ -25,7 +31,8 @@ class UsersRepositoryAdapter @Autowired constructor(private val repository: User
                 email = user.email,
                 password = user.password,
                 role = user.role,
-                level = user.level
+                level = user.level,
+                lastCodeId = user.lastCodeId
             ))
                 .id
         )
@@ -45,5 +52,13 @@ class UsersRepositoryAdapter @Autowired constructor(private val repository: User
 
     override fun findById(id: UserId): User? {
         return repository.findByIdOrNull(id.value)?.to()
+    }
+
+    override fun getUserPreviousCode(userId: UserId): Algorithm? {
+        val savedUser = repository.findByIdOrNull(userId.value)?.to() ?: return null
+        if (savedUser.lastCodeId == null) {
+            return null
+        }
+        return codeRepository.findByIdOrNull(savedUser.lastCodeId)?.to()
     }
 }

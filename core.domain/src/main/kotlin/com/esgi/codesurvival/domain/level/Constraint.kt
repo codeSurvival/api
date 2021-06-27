@@ -10,13 +10,5 @@ class Constraint(
     val regexes: MutableList<Regex>
 ) {
 
-    fun isRespected(algo: Algorithm) : Boolean {
-        regexes.forEach { regex ->
-            val match = regex.value.containsMatchIn(algo.code)
-            if (regex.language.id == algo.language.id && match) {
-                return false
-            }
-        }
-        return true
-    }
+
 }

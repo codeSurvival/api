@@ -19,5 +19,7 @@ class UserEntity (
     @Enumerated(EnumType.STRING)
     @Column(name = "role") var role: Role,
 
-    @Column(name = "level", columnDefinition = "integer default 1" ) var level: Int
+    @Column(name = "level", columnDefinition = "integer default 1" ) var level: Int,
+
+    @Column(name = "last_code_id") var lastCodeId: UUID?
 )
