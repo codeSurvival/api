@@ -4,5 +4,5 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 interface SseHandler {
     fun subscribeToGameEventListening(id: String): SseEmitter?
-    fun emitGameEventTo(userId: String, gameEventByteArray: String)
+    fun emitGameEventTo(userId: String, gameEventSerialized: String)
 }

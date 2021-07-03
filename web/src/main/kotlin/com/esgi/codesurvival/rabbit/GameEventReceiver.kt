@@ -12,8 +12,12 @@ class GameEventReceiver(val sseHandler: SseHandler): RabbitConsumer<ByteArray> {
     private val mapper = jacksonObjectMapper()
 
     override fun consume(message: ByteArray) {
-        val g = mapper.readValue<GameEventDTO>(String(message))
-        sseHandler.emitGameEventTo(g.user, String(message))
-        println(g)
+        try {
+            val g = mapper.readValue<GameEventDTO>(String(message))
+            println(g)
+            sseHandler.emitGameEventTo(g.user, String(message))
+        } catch (e: Error) {
+            println(e.stackTrace)
+        }
     }
 }
