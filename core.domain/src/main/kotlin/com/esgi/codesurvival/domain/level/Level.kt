@@ -4,8 +4,8 @@ import com.esgi.codesurvival.domain.common.exceptions.DomainException
 
 
 class Level(
-    val ordinalValue: Int,
-    val turnObjective: Int,
+    var ordinalValue: Int,
+    var turnObjective: Int,
     val constraints: MutableList<Constraint>
 ) {
 

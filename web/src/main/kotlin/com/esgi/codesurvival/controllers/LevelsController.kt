@@ -3,6 +3,7 @@ package com.esgi.codesurvival.controllers
 import com.esgi.codesurvival.application.levels.add_constraint.CreateConstraintCommand
 import com.esgi.codesurvival.application.levels.add_regex.CreateRegexCommand
 import com.esgi.codesurvival.application.levels.create_level.CreateLevelCommand
+import com.esgi.codesurvival.application.levels.create_level.UpdateLevelCommand
 import com.esgi.codesurvival.application.levels.queries.LightLevel
 import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetCompleteLevelByIdQuery
 import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetLevelByIdQuery
@@ -37,6 +38,17 @@ class LevelsController(private val mediator: Mediator) {
     fun create(@RequestBody level: CreateLevelCommand): ResponseEntity<Unit> {
         return try{
             val created = mediator.dispatch(level)
+            val uri = MvcUriComponentsBuilder.fromMethodName(LevelsController::class.java, "getById", created.toString(), 1).build().toUri()
+            return ResponseEntity.created(uri).build()
+        } catch (e: Exception){
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+    }
+
+    @PostMapping("{id}")
+    fun update(@PathVariable id: Int, @RequestBody level: CreateLevelCommand): ResponseEntity<Unit> {
+        return try{
+            val created = mediator.dispatch(UpdateLevelCommand(id, level.turnObjective))
             val uri = MvcUriComponentsBuilder.fromMethodName(LevelsController::class.java, "getById", created.toString(), 1).build().toUri()
             return ResponseEntity.created(uri).build()
         } catch (e: Exception){
