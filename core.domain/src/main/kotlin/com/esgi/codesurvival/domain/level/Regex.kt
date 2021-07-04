@@ -5,7 +5,7 @@ import kotlin.text.Regex
 
 class Regex(
     val id: UUID,
-    val value: Regex,
-    val language: Language
+    var value: Regex,
+    var language: Language
 ) {
 }
