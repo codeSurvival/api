@@ -6,13 +6,11 @@ import com.esgi.codesurvival.application.code.repositories.ICodeRepository
 import com.esgi.codesurvival.application.languages.repositories.ILanguagesRepository
 import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
 import com.esgi.codesurvival.application.rabbit.EmitterFactory
-import com.esgi.codesurvival.application.rabbit.RabbitEmitter
 import com.esgi.codesurvival.application.security.ApplicationException
 import com.esgi.codesurvival.application.users.repositories.IUsersRepository
 import com.esgi.codesurvival.domain.code.Algorithm
 import com.esgi.codesurvival.domain.code.Code
 import com.esgi.codesurvival.domain.code.Player
-import com.esgi.codesurvival.domain.comparable_code.ComparableCode
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
@@ -49,30 +47,31 @@ class CodeExecutionCommandHandler(
         if(!rulesResult.success) {
             return returnData
         }
-
-        val previousCode = codeOwnerRepository.getUserPreviousCode(user.id)
-
-        if (previousCode != null && previousCode.languageId == submittedAlgorithm.languageId) {
-
-            val comparable = ComparableCode(submittedAlgorithm.code)
-            val isTooSimilar = comparable.isSimilar(previousCode.code, 0.9)
-
-            if (isTooSimilar) {
-                returnData.similaritySuccess = false
-                return returnData
-            }
-        }
-
-        val codeId = codeRepository.save(submittedAlgorithm)
-        user.lastCodeId = codeId
-        userRepository.save(user)
+//
+//        val previousCode = codeOwnerRepository.getUserPreviousCode(user.id)
+//
+//        if (previousCode != null && previousCode.languageId == submittedAlgorithm.languageId) {
+//
+//            val comparable = ComparableCode(submittedAlgorithm.code)
+//            val isTooSimilar = comparable.isSimilar(previousCode.code, 0.9)
+//
+//            if (isTooSimilar) {
+//                returnData.similaritySuccess = false
+//                return returnData
+//            }
+//        }
+//
+//        val codeId = codeRepository.save(submittedAlgorithm)
+//        user.lastCodeId = codeId
+//        userRepository.save(user)
 
 //        val anonymizer = anonymizerFactory.get(language) // TODO : use
 
         val language = languageRepository.findById(request.languageId) ?: throw ApplicationException("Language not found")
+        val userLevel = levelRepository.findById(user.level) ?: throw ApplicationException("level not found")
 
         codeEmitterFactory.get(language)
-            .emitToRunner(codeToTest.algorithm.code)
+            .emitToRunner(codeToTest.algorithm.code, user.id, userLevel.turnObjective)
 
         return returnData
     }
