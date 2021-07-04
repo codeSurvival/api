@@ -1,6 +1,9 @@
 package com.esgi.codesurvival.sse
 
 import com.esgi.codesurvival.application.sse.SseHandler
+import com.esgi.codesurvival.application.sse.jackets.SseEventType
+import com.esgi.codesurvival.application.sse.jackets.SseEventType.*
+import com.esgi.codesurvival.application.sse.jackets.SseJacket
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -15,7 +18,7 @@ class SseHandlerImpl : SseHandler {
     val gameEventEmitters: HashMap<String, MutableList<SseEmitter>> = HashMap()
     val ghostEmitters: HashMap<String, MutableList<SseEmitter>> = HashMap()
 
-    override fun subscribeToGameEventListening(id: String): SseEmitter? {
+    override fun subscribeToSse(id: String): SseEmitter? {
         val emitter = SseEmitter(-1L)
 
         if (!gameEventEmitters.containsKey(id)) {
@@ -27,11 +30,11 @@ class SseHandlerImpl : SseHandler {
     }
 
 
-    override fun emitGameEventTo(userId: String, gameEventSerialized: String) {
+    override fun emitTo(userId: String, gameEventSerialized: String, emissionType: SseEventType) {
         if (gameEventEmitters.containsKey(userId)) {
             for (emitter in gameEventEmitters[userId]!!) {
                 try {
-                    this.emit(emitter, userId, gameEventSerialized)
+                    this.emit(emitter, userId, gameEventSerialized, emissionType)
                 } catch (e: Error) {
                     println(e)
                 }
@@ -54,16 +57,16 @@ class SseHandlerImpl : SseHandler {
     fun keepAlive() {
         for ((key, value) in gameEventEmitters) {
             for (emitter in value) {
-                this.emit(emitter, key, "")
+                this.emit(emitter, key, "", HEARTBEAT)
             }
         }
         this.cleanEmitters()
     }
 
 
-    private fun emit(emitter: SseEmitter, userId: String, emission: String) {
+    private fun emit(emitter: SseEmitter, userId: String, emission: String, emissionType: SseEventType) {
         val event = event()
-        event.data(emission)
+        event.data(SseJacket(emissionType, emission))
 
         kotlin.runCatching {
             emitter.send(event)

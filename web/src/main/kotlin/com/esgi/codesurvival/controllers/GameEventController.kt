@@ -2,6 +2,7 @@ package com.esgi.codesurvival.controllers
 
 import com.esgi.codesurvival.application.security.parse_token.ParseTokenQuery
 import com.esgi.codesurvival.application.sse.SseHandler
+import com.esgi.codesurvival.application.sse.jackets.SseEventType
 import com.esgi.codesurvival.application.users.queries.get_user_by_username.GetUserByUsernameQuery
 import io.jkratz.mediator.core.Mediator
 import org.springframework.http.HttpHeaders
@@ -21,7 +22,7 @@ class GameEventController(
         val token = headers.getFirst(HttpHeaders.AUTHORIZATION) ?: throw Exception("no token")
         val username = mediator.dispatch(ParseTokenQuery(token))
         val user = mediator.dispatch(GetUserByUsernameQuery(username))
-        return sseHandler.subscribeToGameEventListening(user.id.toString())
+        return sseHandler.subscribeToSse(user.id.toString())
     }
 
     @PostMapping()
@@ -29,12 +30,7 @@ class GameEventController(
         val token = headers.getFirst(HttpHeaders.AUTHORIZATION) ?: throw Exception("no token")
         val username = mediator.dispatch(ParseTokenQuery(token))
         val user = mediator.dispatch(GetUserByUsernameQuery(username))
-        sseHandler.emitGameEventTo(user.id.toString(), "dog")
-    }
-
-    @GetMapping("/dag")
-    fun dodo(): String {
-        return "ah"
+        sseHandler.emitTo(user.id.toString(), "dog", SseEventType.GAME_EVENT)
     }
 
 }
