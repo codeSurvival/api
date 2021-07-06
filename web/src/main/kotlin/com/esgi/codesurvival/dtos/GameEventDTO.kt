@@ -18,7 +18,7 @@ enum class Direction {
 
 data class Grid (val tiles: List<Tile>)
 
-class Tile(val coordonates: Coordinates, val containt: List<TileContaint>, val type: TileType)
+class Tile(val coordinates: Coordinates, val containt: List<TileContaint>, val type: TileType)
 
 enum class TileType {
     GRASS,
@@ -43,11 +43,11 @@ data class WorldDTO(val mobDTO: MobDTO, val grid: GridDTO, val round: Int) {
 
 }
 
-data class GridDTO(val tiles: List<TileDTO>) {
+data class GridDTO(val tiles: List<TileDTO>, val gridSize: Int) {
 
 }
 
-data class TileDTO(val coordonates: Coordinates, val containt: List<TileContaint>, val type: TileType) {
+data class TileDTO(val coordinates: Coordinates, val containt: List<TileContaint>, val type: TileType) {
 }
 
 data class MobDTO(val mobState: MobState) {
