@@ -5,8 +5,8 @@ import java.util.*
 
 class Constraint(
     val id : UUID,
-    val name: String,
-    val warning: String,
+    var name: String,
+    var warning: String,
     val regexes: MutableList<Regex>
 ) {
 
