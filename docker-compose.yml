@@ -1,6 +1,21 @@
 version: "3.9"
 
 services:
+  code-survival-front:
+    image: code-survival/front
+    container_name: code-survival-front
+    ports:
+      - "4020:80"
+    tty: true
+    expose:
+      - "4020"
+    stdin_open: true
+    depends_on:
+      - code-survival-api
+    environment:
+      - MODE=dev
+      - API_URL=code-survival-api
+
   code-survival-api:
     container_name: code-survival-api
     restart: unless-stopped
