@@ -105,5 +105,7 @@ fabric.properties
 
 .gitignore
 
+plugins
+
 README.md
 LICENSE
