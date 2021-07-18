@@ -8,38 +8,9 @@ class KotlinAnonymizer : Anonymizer {
 
     val variableDeclarationPatterns = listOf<Regex>(Regex("(val|var)\\s+\\w*\\s*[=:]"))
 
-    val prefixUsageDelimitors = listOf<Char>(
-        '\n',
-        '=',
-        ' ',
-        '+',
-        '-',
-        '*',
-        '.',
-        ';',
-        '(',
-        '[',
-        '<',
-        '>')
-
-    val suffixUsageDelimitors = listOf<Char>(
-        '\n',
-        '=',
-        ' ',
-        '+',
-        '-',
-        '*',
-        '.',
-        ';',
-        ')',
-        '[',
-        ']',
-        '<',
-        '>')
-
-
 
     override fun anonymize(userCode: String): String {
+
 
         val declarations = mutableListOf<Regex>()
 
@@ -51,7 +22,11 @@ class KotlinAnonymizer : Anonymizer {
         var anonymizedCode = userCode
 
         declarations.forEach { declaration ->
-            anonymizedCode = declaration.replace(userCode, "_")
+            val declarationPattern = Regex( "[\\s,;+-.*.\\[(=<>{%]" + declaration + "[\\s,;+-.*.\\[)(\\]}=<>%]")
+
+            anonymizedCode = declarationPattern.replace(anonymizedCode) {
+                    m -> declaration.replace(m.value, "_")
+            }
         }
         return anonymizedCode
     }
