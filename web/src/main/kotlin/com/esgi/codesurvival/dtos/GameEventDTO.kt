@@ -10,33 +10,32 @@ data class MobAction(val type: ActionType, val target: Direction? = null) {
 enum class ActionType(val needsDirection: Boolean) {
     WALK(true),
     TRIPPED(false),
+    SCOUT(true),
+    JUMP(true),
 }
 
 enum class Direction {
     UP, DOWN, LEFT, RIGHT
 }
 
-data class Grid (val tiles: List<Tile>)
+data class CoordinatesDTO(val x: Int, val y: Int) {
 
-class Tile(val coordinates: Coordinates, val containt: List<TileContaint>, val type: TileType)
+}
 
 enum class TileType {
     GRASS,
     PIT,
+    TREE,
 }
 
-data class Mob(val state: MobState) {
-
-}
-
-data class MobState(var health: Int, var position: Coordinates) {
+data class MobStateDTO(val needs: HashMap<MobNeeds, Int>, var position: CoordinatesDTO, var memoryTile: List<TileDTO>) {
 
 }
 
-data class Coordinates(val x: Int, val y: Int) {
-
+enum class MobNeeds {
+    BLOOD,
+    HUNGER,
 }
-
 
 
 data class WorldDTO(val mobDTO: MobDTO, val grid: GridDTO, val round: Int) {
@@ -47,10 +46,10 @@ data class GridDTO(val tiles: List<TileDTO>, val gridSize: Int) {
 
 }
 
-data class TileDTO(val coordinates: Coordinates, val containt: List<TileContaint>, val type: TileType) {
+data class TileDTO(val coordinates: CoordinatesDTO, val containt: List<TileContaint>, val type: TileType) {
 }
 
-data class MobDTO(val mobState: MobState) {
+data class MobDTO(val mobState: MobStateDTO) {
 
 }
 
