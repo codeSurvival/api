@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
 import java.util.*
+import javax.transaction.Transactional
 
 @RestController
 @RequestMapping("users")
@@ -31,6 +32,7 @@ class UsersController(private val mediator: Mediator) {
         }
     }
 
+    @Transactional
     @PostMapping("registration")
     fun register(@RequestBody user: UserRegisterCommand): ResponseEntity<Unit> {
         return try {
@@ -44,6 +46,7 @@ class UsersController(private val mediator: Mediator) {
         }
     }
 
+    @Transactional
     @PostMapping("authentication")
     fun authenticate(@RequestBody credentials: LoginUserCommand): ResponseEntity<ConnectedUser> {
         return try {

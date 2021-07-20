@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
 import java.util.*
+import javax.transaction.Transactional
 
 
 @RestController
@@ -25,6 +26,7 @@ class LanguagesController(private val mediator : Mediator) {
     }
 
 
+    @Transactional
     @PostMapping
     fun create(@RequestBody language: CreateLanguageCommand): ResponseEntity<Unit> {
         return try{

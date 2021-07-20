@@ -8,6 +8,7 @@ import io.jkratz.mediator.core.Mediator
 import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
+import javax.transaction.Transactional
 
 
 @RestController
@@ -24,13 +25,4 @@ class GameEventController(
         val user = mediator.dispatch(GetUserByUsernameQuery(username))
         return sseHandler.subscribeToSse(user.id.toString())
     }
-
-    @PostMapping()
-    fun sendTest(@RequestHeader headers: HttpHeaders) {
-        val token = headers.getFirst(HttpHeaders.AUTHORIZATION) ?: throw Exception("no token")
-        val username = mediator.dispatch(ParseTokenQuery(token))
-        val user = mediator.dispatch(GetUserByUsernameQuery(username))
-        sseHandler.emitTo(user.id.toString(), "dog", SseEventType.GAME_EVENT)
-    }
-
 }

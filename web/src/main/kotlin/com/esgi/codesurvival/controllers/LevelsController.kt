@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
 import java.util.*
+import javax.transaction.Transactional
 
 @RestController
 @RequestMapping("levels")
@@ -37,6 +38,7 @@ class LevelsController(private val mediator: Mediator) {
         }
     }
 
+    @Transactional
     @PostMapping
     fun create(@RequestBody level: CreateLevelCommand): ResponseEntity<Unit> {
         return try{
@@ -48,6 +50,7 @@ class LevelsController(private val mediator: Mediator) {
         }
     }
 
+    @Transactional
     @PostMapping("{id}")
     fun update(@PathVariable id: Int, @RequestBody level: CreateLevelCommand): ResponseEntity<Unit> {
         return try{

@@ -10,12 +10,14 @@ import io.jkratz.mediator.core.Mediator
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.transaction.Transactional
 
 
 @RestController
 @RequestMapping("code")
 class CodeController(private val mediator: Mediator) {
 
+    @Transactional
     @PostMapping("execution")
     fun execute(@RequestHeader headers : HttpHeaders, @RequestBody codeExecutionDTO: CodeExecutionDTO): ResponseEntity<CodeOutput> {
         val token = headers.getFirst(HttpHeaders.AUTHORIZATION) ?: throw Exception("no token")
