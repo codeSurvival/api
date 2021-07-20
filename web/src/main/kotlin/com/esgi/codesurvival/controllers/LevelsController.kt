@@ -6,6 +6,7 @@ import com.esgi.codesurvival.application.levels.add_regex.CreateRegexCommand
 import com.esgi.codesurvival.application.levels.add_regex.UpdateRegexCommand
 import com.esgi.codesurvival.application.levels.create_level.CreateLevelCommand
 import com.esgi.codesurvival.application.levels.create_level.UpdateLevelCommand
+import com.esgi.codesurvival.application.levels.queries.GetActiveConstraintsByLevel.GetActiveConstraintsByLevelQuery
 import com.esgi.codesurvival.application.levels.queries.LightLevel
 import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetCompleteLevelByIdQuery
 import com.esgi.codesurvival.application.levels.queries.get_level_by_id.GetLevelByIdQuery
@@ -68,6 +69,15 @@ class LevelsController(private val mediator: Mediator) {
             } else {
                 ResponseEntity.badRequest().build()
             }
+        } catch(e : ApplicationException) {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping("{id}/constraints")
+    fun getConstraintsBeyond(@PathVariable id: Int ) : ResponseEntity<Any>   {
+        return try {
+                ResponseEntity.ok(mediator.dispatch(GetActiveConstraintsByLevelQuery(id)))
         } catch(e : ApplicationException) {
             ResponseEntity.notFound().build()
         }

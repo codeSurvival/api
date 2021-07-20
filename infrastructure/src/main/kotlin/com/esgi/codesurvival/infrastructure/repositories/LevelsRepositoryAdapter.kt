@@ -2,12 +2,9 @@ package com.esgi.codesurvival.infrastructure.repositories
 
 import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
 import com.esgi.codesurvival.domain.code.LevelConstraint
+import com.esgi.codesurvival.domain.level.Constraint
 import com.esgi.codesurvival.domain.level.Level
-import com.esgi.codesurvival.infrastructure.mappers.to
-import com.esgi.codesurvival.infrastructure.mappers.toRegex
-import com.esgi.codesurvival.infrastructure.mappers.toConstraint
-import com.esgi.codesurvival.infrastructure.mappers.toConstraintRegex
-import com.esgi.codesurvival.infrastructure.mappers.toLevelConstraint
+import com.esgi.codesurvival.infrastructure.mappers.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -83,5 +80,10 @@ class LevelsRepositoryAdapter @Autowired constructor(
         }
 
         return savedConstraints
+    }
+
+    override fun getActiveConstraints(levelId: Int): List<Constraint> {
+        levelRepository.findByIdOrNull(levelId)?.to() ?: return mutableListOf()
+        return constraintRepository.findAllByLevelIdGreaterThanEqual(levelId).map { it.toConstraint() }
     }
 }
