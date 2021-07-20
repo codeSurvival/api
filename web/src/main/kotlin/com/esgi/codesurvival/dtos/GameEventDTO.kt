@@ -28,7 +28,7 @@ enum class TileType {
     TREE,
 }
 
-data class MobStateDTO(val needs: HashMap<MobNeeds, Int>, var position: CoordinatesDTO, var memoryTile: List<TileDTO>) {
+data class MobStateDTO(val needs: HashMap<MobNeeds, Int>, var position: CoordinatesDTO, var memoryTile: List<TileDTO>, val memory: HashMap<String, String>) {
 
 }
 
