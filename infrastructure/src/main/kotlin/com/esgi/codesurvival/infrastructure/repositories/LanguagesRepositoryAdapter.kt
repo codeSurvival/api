@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.transaction.Transactional
 
 @Service
 class LanguagesRepositoryAdapter @Autowired constructor(
@@ -16,6 +17,7 @@ class LanguagesRepositoryAdapter @Autowired constructor(
         return languagesRepository.findAll().map { it.to() }
     }
 
+    @Transactional
     override fun save(language: Language): UUID {
         return languagesRepository.save(language.to()).id
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.transaction.Transactional
 
 @Service
 class LevelsRepositoryAdapter @Autowired constructor(
@@ -22,6 +23,7 @@ class LevelsRepositoryAdapter @Autowired constructor(
         return levelRepository.findAll().map { it.to() }
     }
 
+    @Transactional
     override fun save(level: Level): Int {
         levelRepository.save(level.to())
         level.constraints.forEach { constraintModel ->
