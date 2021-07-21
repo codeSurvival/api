@@ -6,11 +6,13 @@ import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 class GetUsersQuery(): Request<List<UserResume>>
 
 @Component
-class GetUsersQueryHandler @Autowired constructor(private val repository: IUsersRepository) :
+@Transactional
+open class GetUsersQueryHandler @Autowired constructor(private val repository: IUsersRepository) :
     RequestHandler<GetUsersQuery, List<UserResume>> {
     override fun handle(request: GetUsersQuery): List<UserResume> {
         return repository.findAll().map {

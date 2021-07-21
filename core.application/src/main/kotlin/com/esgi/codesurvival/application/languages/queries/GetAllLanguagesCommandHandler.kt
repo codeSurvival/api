@@ -9,13 +9,15 @@ import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 
 class GetAllLanguagesQuery() : Request<List<LanguageResponseDTO>>
 
 
 @Component
-class GetAllLanguagesCommandHandler (private val repository: ILanguagesRepository)
+@Transactional
+open class GetAllLanguagesCommandHandler (private val repository: ILanguagesRepository)
     : RequestHandler<GetAllLanguagesQuery, List<LanguageResponseDTO>> {
     override fun handle(request: GetAllLanguagesQuery): List<LanguageResponseDTO> {
         return this.repository.findAll().map { it.to() }

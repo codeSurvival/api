@@ -6,12 +6,14 @@ import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 
 class CreateLevelCommand(var turnObjective: Int) : Request<Int>
 
 @Component
-class CreateLevelCommandHandler @Autowired constructor(
+@Transactional
+open class CreateLevelCommandHandler @Autowired constructor(
     private val repository: ILevelRepository
 ) : RequestHandler<CreateLevelCommand, Int>
 {

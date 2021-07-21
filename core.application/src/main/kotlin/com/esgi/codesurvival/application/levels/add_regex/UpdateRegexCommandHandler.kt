@@ -10,6 +10,7 @@ import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 
 class UpdateRegexCommand(
@@ -20,7 +21,8 @@ class UpdateRegexCommand(
 ) : Request<UUID>
 
 @Component
-class UpdateRegexCommandHandler @Autowired constructor(
+@Transactional
+open class UpdateRegexCommandHandler @Autowired constructor(
     private val levelRepository: ILevelRepository,
     private val regexRepository: IRegexRepository,
     private val languageRepository: ILanguagesRepository

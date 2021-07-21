@@ -6,12 +6,14 @@ import com.esgi.codesurvival.application.security.ApplicationException
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 
 data class GetActiveConstraintsByLevelQuery(val levelId : Int): Request<LevelActiveConstraintsResponseDTO>
 
 @Component
-class GetActiveConstraintsByLevelQueryHandler(val levelRepository: ILevelRepository) :
+@Transactional
+open class GetActiveConstraintsByLevelQueryHandler(val levelRepository: ILevelRepository) :
     RequestHandler<GetActiveConstraintsByLevelQuery, LevelActiveConstraintsResponseDTO> {
 
 

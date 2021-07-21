@@ -9,11 +9,13 @@ import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 data class UserRegisterCommand(var username: String, var password: String, var email: String) : Request<UserId>
 
 @Component
-class RegisterUserCommandHandler @Autowired constructor(
+@Transactional
+open class RegisterUserCommandHandler @Autowired constructor(
     private val repository: IUsersRepository,
     private val hashingService: IHashingService
 ) :

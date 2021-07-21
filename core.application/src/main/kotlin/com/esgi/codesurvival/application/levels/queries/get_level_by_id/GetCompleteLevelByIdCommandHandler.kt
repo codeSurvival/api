@@ -6,11 +6,13 @@ import com.esgi.codesurvival.application.security.ApplicationException
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 data class GetCompleteLevelByIdQuery(val id: Int) : Request<CompleteLevelResponseDTO>
 
 @Component
-class GetCompleteLevelByIdCommandHandler (private val repository: ILevelRepository)
+@Transactional
+open class GetCompleteLevelByIdCommandHandler (private val repository: ILevelRepository)
     : RequestHandler<GetCompleteLevelByIdQuery, CompleteLevelResponseDTO> {
 
     override fun handle(request: GetCompleteLevelByIdQuery): CompleteLevelResponseDTO {

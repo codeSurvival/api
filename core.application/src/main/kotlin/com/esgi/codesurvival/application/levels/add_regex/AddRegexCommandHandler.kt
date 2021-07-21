@@ -12,11 +12,13 @@ import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 class CreateRegexCommand(var constraintId: UUID, var value: String, var languageId: UUID) : Request<UUID>
 
 @Component
-class AddRegexCommandHandler @Autowired constructor(
+@Transactional
+open class AddRegexCommandHandler @Autowired constructor(
     private val levelRepository: ILevelRepository,
     private val regexRepository: IRegexRepository,
     private val languageRepository: ILanguagesRepository

@@ -7,12 +7,14 @@ import com.esgi.codesurvival.application.users.repositories.IUsersRepository
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 
 class LoginUserCommand(var username: String, var password: String) : Request<ConnectedUser>
 
 @Component
-class LoginUserCommandHandler(private val repository: IUsersRepository,
+@Transactional
+open class LoginUserCommandHandler(private val repository: IUsersRepository,
                        private val tokenService: ITokenService,
                        private val securityService: IHashingService
 ) : RequestHandler<LoginUserCommand, ConnectedUser> {

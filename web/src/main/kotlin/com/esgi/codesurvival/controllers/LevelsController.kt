@@ -27,9 +27,12 @@ import javax.transaction.Transactional
 
 @RestController
 @RequestMapping("levels")
+@Transactional
 class LevelsController(private val mediator: Mediator) {
 
+
     @GetMapping
+    @Transactional
     fun getAll(@RequestHeader headers : HttpHeaders) : ResponseEntity<List<LightLevel>> {
         return try {
             ResponseEntity.ok(mediator.dispatch(GetLevelsQuery()))
@@ -63,6 +66,7 @@ class LevelsController(private val mediator: Mediator) {
     }
 
     @GetMapping("{id}")
+    @Transactional
     fun getById(@PathVariable id: Int, @RequestParam complete : Int? ) : ResponseEntity<Any>   {
         return try {
             if( complete == 0 || complete == null) {
@@ -78,6 +82,7 @@ class LevelsController(private val mediator: Mediator) {
     }
 
     @GetMapping("{id}/constraints")
+    @Transactional
     fun getConstraintsBeyond(@PathVariable id: Int ) : ResponseEntity<Any>   {
         return try {
                 ResponseEntity.ok(mediator.dispatch(GetActiveConstraintsByLevelQuery(id)))
@@ -88,6 +93,7 @@ class LevelsController(private val mediator: Mediator) {
 
 
     @PostMapping("{level_id}/constraints")
+    @Transactional
     fun createConstraint(@PathVariable level_id: Int, @RequestBody constraint: CreateConstraintDTO): ResponseEntity<Unit> {
         return try{
             val created = mediator.dispatch(
@@ -101,6 +107,7 @@ class LevelsController(private val mediator: Mediator) {
     }
 
     @PostMapping("{level_id}/constraints/{constraint_id}")
+    @Transactional
     fun update(@PathVariable level_id: Int, @PathVariable constraint_id: UUID, @RequestBody constraint: CreateConstraintDTO): ResponseEntity<Unit> {
         return try{
             val created = mediator.dispatch(
@@ -114,11 +121,13 @@ class LevelsController(private val mediator: Mediator) {
     }
 
     @GetMapping("{level_id}/constraints/{constraint_id}")
+    @Transactional
     fun getConstraintById(@PathVariable level_id: Int, @PathVariable constraint_id: Int)  {
 
     }
 
     @PostMapping("{level_id}/constraints/{constraint_id}/regex")
+    @Transactional
     fun createRegex(@PathVariable level_id: Int, @PathVariable constraint_id: UUID, @RequestBody regex: CreateRegexDTO): ResponseEntity<Unit> {
         return try{
             val created = mediator.dispatch(
@@ -132,6 +141,7 @@ class LevelsController(private val mediator: Mediator) {
     }
 
     @PostMapping("{level_id}/constraints/{constraint_id}/regex/{regex_id}")
+    @Transactional
     fun createRegex(@PathVariable level_id: Int, @PathVariable constraint_id: UUID, @PathVariable regex_id: UUID, @RequestBody regex: CreateRegexDTO): ResponseEntity<Unit> {
         return try{
             val created = mediator.dispatch(
@@ -145,6 +155,7 @@ class LevelsController(private val mediator: Mediator) {
     }
 
     @GetMapping("{level_id}/constraints/{constraint_id}/regex/{regex_id}")
+    @Transactional
     fun getRegexById(@PathVariable level_id: Int, @PathVariable constraint_id: Int)  {
 
     }

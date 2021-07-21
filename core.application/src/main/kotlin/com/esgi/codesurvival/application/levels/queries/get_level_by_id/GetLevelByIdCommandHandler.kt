@@ -6,11 +6,13 @@ import com.esgi.codesurvival.application.security.ApplicationException
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 data class GetLevelByIdQuery(val id: Int) : Request<LightLevel>
 
 @Component
-class GetLevelByIdCommandHandler (private val repository: ILevelRepository)
+@Transactional
+open class GetLevelByIdCommandHandler (private val repository: ILevelRepository)
     : RequestHandler<GetLevelByIdQuery, LightLevel>
 {
     override fun handle(request: GetLevelByIdQuery): LightLevel {

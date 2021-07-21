@@ -19,6 +19,7 @@ class GameEventController(
 ) {
 
     @GetMapping
+    @Transactional
     fun createConnection(@RequestHeader headers: HttpHeaders): SseEmitter? {
         val token = headers.getFirst(HttpHeaders.AUTHORIZATION) ?: throw Exception("no token")
         val username = mediator.dispatch(ParseTokenQuery(token))

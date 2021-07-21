@@ -7,12 +7,14 @@ import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 
 data class GetUserByUsernameQuery(val username : String): Request<UserResume>
 
 @Component
-class GetUserByUsernameQueryHandler @Autowired constructor(private val repository: IUsersRepository) :
+@Transactional
+open class GetUserByUsernameQueryHandler @Autowired constructor(private val repository: IUsersRepository) :
     RequestHandler<GetUserByUsernameQuery, UserResume> {
     override fun handle(request: GetUserByUsernameQuery): UserResume {
         repository.findByUsername(request.username)?.let {

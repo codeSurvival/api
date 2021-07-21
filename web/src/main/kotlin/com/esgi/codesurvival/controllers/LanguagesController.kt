@@ -38,6 +38,7 @@ class LanguagesController(private val mediator : Mediator) {
         }
     }
 
+    @Transactional
     @GetMapping("")
     fun getAll() : ResponseEntity<List<LanguageResponseDTO>>  {
         return try {

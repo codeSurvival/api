@@ -15,12 +15,14 @@ import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 class CodeExecutionCommand(var code: String, var languageId: UUID, var username: String) : Request<CodeOutput>
 
 
 @Component
-class CodeExecutionCommandHandler(
+@Transactional
+open class CodeExecutionCommandHandler(
     private val userRepository: IUsersRepository,
     private val levelRepository: ILevelRepository,
     private val languageRepository: ILanguagesRepository,

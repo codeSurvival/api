@@ -9,6 +9,7 @@ import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 
 class UpdateConstraintCommand(
@@ -19,7 +20,8 @@ class UpdateConstraintCommand(
     ) : Request<UUID>
 
 @Component
-class UpdateConstraintCommandHandler
+@Transactional
+open class UpdateConstraintCommandHandler
 @Autowired constructor(
     private val levelRepository: ILevelRepository
 ) : RequestHandler<UpdateConstraintCommand, UUID>

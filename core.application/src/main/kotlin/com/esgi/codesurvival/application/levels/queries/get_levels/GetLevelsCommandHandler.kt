@@ -6,12 +6,14 @@ import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
+import javax.transaction.Transactional
 
 
 class GetLevelsQuery() : Request<List<LightLevel>>
 
 @Component
-class GetLevelsCommandHandler (private val repository: ILevelRepository):
+@Transactional
+open class GetLevelsCommandHandler (private val repository: ILevelRepository):
     RequestHandler<GetLevelsQuery, List<LightLevel>> {
     override fun handle(request: GetLevelsQuery): List<LightLevel> {
         return repository.findAll().map { level ->

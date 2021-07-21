@@ -9,11 +9,13 @@ import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 class CreateConstraintCommand(var levelId: Int, var name: String, var warning: String) : Request<UUID>
 
 @Component
-class AddConstraintCommandHandler @Autowired constructor(
+@Transactional
+open class AddConstraintCommandHandler @Autowired constructor(
     private val constraintRepository: IConstraintsRepository,
     private val levelRepository: ILevelRepository
 ) : RequestHandler<CreateConstraintCommand, UUID>

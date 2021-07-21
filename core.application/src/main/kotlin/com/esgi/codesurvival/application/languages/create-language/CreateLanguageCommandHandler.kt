@@ -10,13 +10,15 @@ import io.jkratz.mediator.core.RequestHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 
 class CreateLanguageCommand(var name: String) : Request<UUID>
 
 
 @Component
-class CreateLanguageCommandHandler @Autowired constructor(
+@Transactional
+open class CreateLanguageCommandHandler @Autowired constructor(
     private val languageRepository: ILanguagesRepository
 ) : RequestHandler<CreateLanguageCommand, UUID> {
     override fun handle(request: CreateLanguageCommand): UUID {

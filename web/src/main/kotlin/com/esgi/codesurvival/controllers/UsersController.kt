@@ -23,6 +23,7 @@ import javax.transaction.Transactional
 class UsersController(private val mediator: Mediator) {
 
     @GetMapping
+    @Transactional
     fun getAll(@RequestHeader headers : HttpHeaders) : ResponseEntity<List<UserResume>> {
 
         return try {
@@ -57,6 +58,7 @@ class UsersController(private val mediator: Mediator) {
     }
 
     @GetMapping("me")
+    @Transactional
     fun getMe(@RequestHeader headers : HttpHeaders) : ResponseEntity<UserResume> {
         try {
             val token = headers.getFirst(HttpHeaders.AUTHORIZATION)
@@ -73,6 +75,7 @@ class UsersController(private val mediator: Mediator) {
     }
 
     @GetMapping("{id}")
+    @Transactional
     fun getById(@PathVariable id: UUID) : ResponseEntity<UserResume> {
         return try {
             ResponseEntity.ok(mediator.dispatch(GetUserByIdQuery(id)))

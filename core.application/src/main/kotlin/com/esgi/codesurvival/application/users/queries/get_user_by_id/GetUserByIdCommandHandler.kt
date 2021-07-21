@@ -8,12 +8,14 @@ import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.transaction.Transactional
 
 data class GetUserByIdQuery(val id: UUID) : Request<UserResume>
 
 @Component
-class GetUserByIdCommandHandler(private val repository: IUsersRepository) :
+open class GetUserByIdCommandHandler(private val repository: IUsersRepository) :
     RequestHandler<GetUserByIdQuery, UserResume> {
+    @Transactional
     override fun handle(request: GetUserByIdQuery): UserResume {
         (this.repository.findById(UserId(request.id)))?.let {
             return UserResume(
