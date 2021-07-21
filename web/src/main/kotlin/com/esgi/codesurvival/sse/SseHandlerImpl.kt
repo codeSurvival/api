@@ -1,9 +1,11 @@
 package com.esgi.codesurvival.sse
 
+import com.esgi.codesurvival.application.code.compilation.CompilationStep
 import com.esgi.codesurvival.application.sse.SseHandler
 import com.esgi.codesurvival.application.sse.jackets.SseEventType
 import com.esgi.codesurvival.application.sse.jackets.SseEventType.*
 import com.esgi.codesurvival.application.sse.jackets.SseJacket
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -17,6 +19,7 @@ class SseHandlerImpl : SseHandler {
 
     val gameEventEmitters: HashMap<String, MutableList<SseEmitter>> = HashMap()
     val ghostEmitters: HashMap<String, MutableList<SseEmitter>> = HashMap()
+    private val mapper = jacksonObjectMapper()
 
     override fun subscribeToSse(id: String): SseEmitter? {
         val emitter = SseEmitter(-1L)
@@ -42,6 +45,20 @@ class SseHandlerImpl : SseHandler {
         }
         this.cleanEmitters()
     }
+
+    override fun emitStep(userId: String, step: CompilationStep) {
+        if (gameEventEmitters.containsKey(userId)) {
+            val serializedStep = mapper.writeValueAsString(step)
+            for (emitter in gameEventEmitters[userId]!!) {
+                try {
+                    println("step emitted !")
+                    this.emit(emitter, userId, serializedStep, COMPILATION_STEP)
+                } catch (e: Error) {
+                    println(e)
+                }
+            }
+        }
+        this.cleanEmitters()    }
 
     private fun cleanEmitters() {
         for ((key, value) in ghostEmitters) {

@@ -21,13 +21,4 @@ class RabbitEmitterImpl(@Autowired private val rabbitSender: Sender) : RabbitEmi
         val codeParameters = CodeParametersDTO(code, userId.value.toString(), turnObjective)
         rabbitSender.send(m.writeValueAsString(codeParameters), queueName)
     }
-
-    override fun emitStep(step: CompilationStep, userId: String) {
-        println(queueName)
-        val m = jacksonObjectMapper()
-
-        val stepDTO = CompilationStepDTO(step.type, userId)
-        rabbitSender.send(m.writeValueAsString(stepDTO), queueName)
-
-    }
 }
