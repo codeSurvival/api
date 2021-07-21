@@ -16,4 +16,10 @@ class EmitterFactoryImpl(private val rabbitEmitter: RabbitEmitter<String>): Emit
 
         return rabbitEmitter
     }
+
+    override fun get(): RabbitEmitter<String> {
+         rabbitEmitter.queueName = "steps"
+
+        return rabbitEmitter
+    }
 }

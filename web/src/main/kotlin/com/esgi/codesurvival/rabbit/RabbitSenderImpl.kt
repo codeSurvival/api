@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-data class CodeSender(@Autowired val template: RabbitTemplate?) : Sender {
+data class RabbitSenderImpl(@Autowired val template: RabbitTemplate?) : Sender {
 
     override fun send(message: String, queueName: String) {
         template!!.convertAndSend(queueName, message.toByteArray())

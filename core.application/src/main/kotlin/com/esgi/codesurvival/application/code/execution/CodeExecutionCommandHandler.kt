@@ -1,5 +1,8 @@
 package com.esgi.codesurvival.application.code.execution
 
+import com.esgi.codesurvival.application.code.compilation.CompilationStep
+import com.esgi.codesurvival.application.code.compilation.CompilationStepType
+import com.esgi.codesurvival.application.code.compilation.commands.CompilationStepCommand
 import com.esgi.codesurvival.application.code.execution.anonymizer.AnonymizerFactory
 import com.esgi.codesurvival.application.code.repositories.ICodeOwnerRepository
 import com.esgi.codesurvival.application.code.repositories.ICodeRepository
@@ -11,6 +14,7 @@ import com.esgi.codesurvival.application.users.repositories.IUsersRepository
 import com.esgi.codesurvival.domain.code.Algorithm
 import com.esgi.codesurvival.domain.code.Code
 import com.esgi.codesurvival.domain.code.Player
+import io.jkratz.mediator.core.Mediator
 import io.jkratz.mediator.core.Request
 import io.jkratz.mediator.core.RequestHandler
 import org.springframework.stereotype.Component
@@ -29,7 +33,8 @@ open class CodeExecutionCommandHandler(
     private val codeRepository: ICodeRepository,
     private val anonymizerFactory: AnonymizerFactory,
     private val codeOwnerRepository: ICodeOwnerRepository,
-    private val codeEmitterFactory: EmitterFactory
+    private val codeEmitterFactory: EmitterFactory,
+    private val mediator: Mediator,
 ) :
     RequestHandler<CodeExecutionCommand, CodeOutput> {
     override fun handle(request: CodeExecutionCommand): CodeOutput {
@@ -38,17 +43,25 @@ open class CodeExecutionCommandHandler(
         val submittedAlgorithm = Algorithm(request.code, request.languageId)
 
         val user = userRepository.findByUsername(request.username) ?: throw ApplicationException("User not found")
-        val constraints = levelRepository.findAllConstraintsByLevelId(user.level) ?: throw ApplicationException("Level not found")
+        val constraints =
+            levelRepository.findAllConstraintsByLevelId(user.level) ?: throw ApplicationException("Level not found")
         val player = Player(user.username, constraints)
-        val codeToTest = Code( submittedAlgorithm, player)
+        val codeToTest = Code(submittedAlgorithm, player)
         val rulesResult = codeToTest.validate()
 
         returnData.rulesSuccess = rulesResult.success
-        returnData.failedConstraints = rulesResult.failedConstraints.map{ it.to() }
+        returnData.failedConstraints = rulesResult.failedConstraints.map { it.to() }
 
-        if(!rulesResult.success) {
+        if (!rulesResult.success) {
             return returnData
         }
+
+        mediator.dispatch(
+            CompilationStepCommand(
+                CompilationStep(CompilationStepType.PARSING),
+                user.id.value.toString()
+            )
+        )
 //
 //        val previousCode = codeOwnerRepository.getUserPreviousCode(user.id)
 //
@@ -59,6 +72,12 @@ open class CodeExecutionCommandHandler(
 //
 //            if (isTooSimilar) {
 //                returnData.similaritySuccess = false
+        mediator.dispatch(
+            CompilationStepCommand(
+                CompilationStep(CompilationStepType.NONE),
+                user.id.value.toString()
+            )
+        )
 //                return returnData
 //            }
 //        }
@@ -69,9 +88,16 @@ open class CodeExecutionCommandHandler(
 
 //        val anonymizer = anonymizerFactory.get(language) // TODO : use
 
-        val language = languageRepository.findById(request.languageId) ?: throw ApplicationException("Language not found")
+        val language =
+            languageRepository.findById(request.languageId) ?: throw ApplicationException("Language not found")
         val userLevel = levelRepository.findById(user.level) ?: throw ApplicationException("level not found")
 
+        mediator.dispatch(
+            CompilationStepCommand(
+                CompilationStep(CompilationStepType.COMPILATION),
+                user.id.value.toString()
+            )
+        )
         codeEmitterFactory.get(language)
             .emitToRunner(codeToTest.algorithm.code, user.id, userLevel.turnObjective)
 

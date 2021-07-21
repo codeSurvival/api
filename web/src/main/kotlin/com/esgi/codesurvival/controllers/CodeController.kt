@@ -1,5 +1,7 @@
 package com.esgi.codesurvival.controllers
 
+import com.esgi.codesurvival.application.code.compilation.CompilationStep
+import com.esgi.codesurvival.application.code.compilation.CompilationStepQuery
 import com.esgi.codesurvival.application.code.execution.CodeExecutionCommand
 import com.esgi.codesurvival.application.code.execution.CodeOutput
 import com.esgi.codesurvival.application.security.ApplicationException
@@ -24,6 +26,19 @@ class CodeController(private val mediator: Mediator) {
         val username = mediator.dispatch(ParseTokenQuery(token))
         return try {
             ResponseEntity.ok(mediator.dispatch(CodeExecutionCommand(codeExecutionDTO.code, codeExecutionDTO.language_id, username)))
+        }
+        catch (e: ApplicationException) {
+            ResponseEntity.badRequest().build()
+        }
+    }
+
+    @Transactional
+    @GetMapping("execution")
+    fun getCompilationStep(@RequestHeader headers : HttpHeaders): ResponseEntity<CompilationStep?> {
+        val token = headers.getFirst(HttpHeaders.AUTHORIZATION) ?: throw Exception("no token")
+        val username = mediator.dispatch(ParseTokenQuery(token))
+        return try {
+            ResponseEntity.ok(mediator.dispatch(CompilationStepQuery(username)))
         }
         catch (e: ApplicationException) {
             ResponseEntity.badRequest().build()
