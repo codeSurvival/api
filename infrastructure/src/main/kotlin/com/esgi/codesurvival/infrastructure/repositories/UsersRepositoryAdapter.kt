@@ -16,7 +16,8 @@ import javax.transaction.Transactional
 
 
 @Service
-class UsersRepositoryAdapter @Autowired constructor(
+@Transactional
+open class UsersRepositoryAdapter @Autowired constructor(
     private val repository: UsersRepository,
     private val codeRepository: CodeRepository
     ) : IUsersRepository, ICodeOwnerRepository {

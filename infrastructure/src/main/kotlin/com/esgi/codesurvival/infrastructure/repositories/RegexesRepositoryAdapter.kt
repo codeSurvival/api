@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.transaction.Transactional
 
 @Service
-class RegexesRepositoryAdapter @Autowired constructor(
+@Transactional
+open class RegexesRepositoryAdapter @Autowired constructor(
     private val regexesRepository: RegexesRepository,
     private val languagesRepository: LanguagesRepository) : IRegexRepository {
 

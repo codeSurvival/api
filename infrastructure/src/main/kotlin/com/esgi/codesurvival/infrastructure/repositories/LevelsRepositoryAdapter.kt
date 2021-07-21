@@ -12,7 +12,8 @@ import java.util.*
 import javax.transaction.Transactional
 
 @Service
-class LevelsRepositoryAdapter @Autowired constructor(
+@Transactional
+open class LevelsRepositoryAdapter @Autowired constructor(
     private val levelRepository: LevelsRepository,
     private val constraintRepository: ConstraintsRepository,
     private val regexesRepository: RegexesRepository,

@@ -8,10 +8,12 @@ import com.esgi.codesurvival.infrastructure.models.CodeEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.transaction.Transactional
 
 
 @Service
-class CodeRepositoryAdapter @Autowired constructor(
+@Transactional
+open class CodeRepositoryAdapter @Autowired constructor(
     private val codeRepository: CodeRepository) : ICodeRepository {
 
     override fun save(code: Algorithm): UUID {

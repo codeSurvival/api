@@ -10,7 +10,8 @@ import java.util.*
 import javax.transaction.Transactional
 
 @Service
-class LanguagesRepositoryAdapter @Autowired constructor(
+@Transactional
+open class LanguagesRepositoryAdapter @Autowired constructor(
     private val languagesRepository: LanguagesRepository)
     : ILanguagesRepository {
     override fun findAll(): List<Language> {
