@@ -13,6 +13,7 @@ class GameEventReceiver(val eventSchedulerHandler: EventSchedulerHandler) : Rabb
 
     override fun consume(message: ByteArray) {
         try {
+            println(String(message))
             val g = mapper.readValue<GameEventDTO>(String(message))
             eventSchedulerHandler.addEvent(g.user, String(message))
         } catch (e: Error) {
