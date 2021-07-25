@@ -1,9 +1,8 @@
 package com.esgi.codesurvival.sse
 
-import com.esgi.codesurvival.application.code.compilation.CompilationStep
 import com.esgi.codesurvival.application.sse.SseHandler
 import com.esgi.codesurvival.application.sse.jackets.SseEventType
-import com.esgi.codesurvival.application.sse.jackets.SseEventType.*
+import com.esgi.codesurvival.application.sse.jackets.SseEventType.HEARTBEAT
 import com.esgi.codesurvival.application.sse.jackets.SseJacket
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.scheduling.annotation.EnableScheduling
