@@ -17,25 +17,25 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event
 @EnableScheduling
 class SseHandlerImpl : SseHandler {
 
-    val gameEventEmitters: HashMap<String, MutableList<SseEmitter>> = HashMap()
+    val sseEmitters: HashMap<String, MutableList<SseEmitter>> = HashMap()
     val ghostEmitters: HashMap<String, MutableList<SseEmitter>> = HashMap()
     private val mapper = jacksonObjectMapper()
 
     override fun subscribeToSse(id: String): SseEmitter? {
         val emitter = SseEmitter(-1L)
 
-        if (!gameEventEmitters.containsKey(id)) {
-            gameEventEmitters[id] = mutableListOf()
+        if (!sseEmitters.containsKey(id)) {
+            sseEmitters[id] = mutableListOf()
         }
 
-        gameEventEmitters[id]?.add(emitter)
+        sseEmitters[id]?.add(emitter)
         return emitter
     }
 
 
-    override fun emitTo(userId: String, gameEventSerialized: String, emissionType: SseEventType) {
-        if (gameEventEmitters.containsKey(userId)) {
-            for (emitter in gameEventEmitters[userId]!!) {
+    override fun emitGameEventTo(userId: String, gameEventSerialized: String, emissionType: SseEventType) {
+        if (sseEmitters.containsKey(userId)) {
+            for (emitter in sseEmitters[userId]!!) {
                 try {
                     this.emit(emitter, userId, gameEventSerialized, emissionType)
                 } catch (e: Error) {
@@ -46,10 +46,24 @@ class SseHandlerImpl : SseHandler {
         this.cleanEmitters()
     }
 
+    override fun emitMessageTo(userId: String, message: String) {
+        if (sseEmitters.containsKey(userId)) {
+            for (emitter in sseEmitters[userId]!!) {
+                try {
+                    println("message emitted : $message")
+                    this.emit(emitter, userId, message, MESSAGE)
+                } catch (e: Error) {
+                    println(e)
+                }
+            }
+        }
+        this.cleanEmitters()
+    }
+
     override fun emitStep(userId: String, step: CompilationStep) {
-        if (gameEventEmitters.containsKey(userId)) {
+        if (sseEmitters.containsKey(userId)) {
             val serializedStep = mapper.writeValueAsString(step)
-            for (emitter in gameEventEmitters[userId]!!) {
+            for (emitter in sseEmitters[userId]!!) {
                 try {
                     println("step emitted !")
                     this.emit(emitter, userId, serializedStep, COMPILATION_STEP)
@@ -58,12 +72,13 @@ class SseHandlerImpl : SseHandler {
                 }
             }
         }
-        this.cleanEmitters()    }
+        this.cleanEmitters()
+    }
 
     private fun cleanEmitters() {
         for ((key, value) in ghostEmitters) {
             for (emitter in value) {
-                this.gameEventEmitters[key]?.remove(emitter)
+                this.sseEmitters[key]?.remove(emitter)
             }
         }
 
@@ -72,7 +87,7 @@ class SseHandlerImpl : SseHandler {
 
     @Scheduled(fixedRate = 30000)
     fun keepAlive() {
-        for ((key, value) in gameEventEmitters) {
+        for ((key, value) in sseEmitters) {
             for (emitter in value) {
                 this.emit(emitter, key, "", HEARTBEAT)
             }

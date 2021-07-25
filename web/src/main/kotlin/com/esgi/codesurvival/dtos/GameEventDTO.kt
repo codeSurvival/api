@@ -1,7 +1,13 @@
 package com.esgi.codesurvival.dtos
 
-data class GameEventDTO(val world: WorldDTO, val action: MobAction?, val gameover: Boolean = false, val user: String, val gameLoss: Boolean)
+data class GameEventDTO(val world: WorldDTO, val action: MobAction?, val gameover: Boolean = false, val user: String, val gameLoss: Boolean, val error: GameErrorDTO?)
 
+data class GameErrorDTO(val type: GameErrorType, val message: String)
+
+enum class GameErrorType {
+    EXECUTION,
+    COMPILATION,
+}
 
 data class MobAction(val type: ActionType, val target: Direction? = null) {
 

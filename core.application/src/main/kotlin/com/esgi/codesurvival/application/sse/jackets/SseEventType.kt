@@ -4,4 +4,5 @@ enum class SseEventType {
     GAME_EVENT,
     HEARTBEAT,
     COMPILATION_STEP,
+    MESSAGE,
 }
