@@ -38,13 +38,13 @@ class EventSchedulerHandlerImpl(val sseHandlerImpl: SseHandler, val mediator: Me
         for((key, value) in gameEventsByUserId) {
             if(!value.isEmpty()) {
                 val gameEvent = value.pop()
-                if (gameEvent.gameover) {
-                    mediator.dispatch(EndGameCommand(gameEvent.gameover, gameEvent.gameLoss, gameEvent.user))
-                }
-
                 if (gameEvent.error != null) {
                     mediator.dispatch(ErrorHandleCommand(gameEvent.error.type, gameEvent.error.message, gameEvent.user))
+                    dequeToRemove.add(gameEvent.user)
                 } else {
+                    if (gameEvent.gameover!!) {
+                        mediator.dispatch(EndGameCommand(gameEvent.gameover, gameEvent.gameLoss!!, gameEvent.user))
+                    }
                     sseHandlerImpl.emitTo<GameEventDTO>(key, gameEvent, SseEventType.GAME_EVENT)
                 }
             } else {
