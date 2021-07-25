@@ -1,6 +1,7 @@
 package com.esgi.codesurvival.sse
 
 import com.esgi.codesurvival.application.code.EndGameCommand
+import com.esgi.codesurvival.application.game.error.ErrorHandleCommand
 import com.esgi.codesurvival.application.sse.EventSchedulerHandler
 import com.esgi.codesurvival.application.sse.SseHandler
 import com.esgi.codesurvival.application.sse.jackets.SseEventType
@@ -42,7 +43,7 @@ class EventSchedulerHandlerImpl(val sseHandlerImpl: SseHandler, val mediator: Me
                 }
 
                 if (gameEvent.error != null) {
-                    // TODO handle error
+                    mediator.dispatch(ErrorHandleCommand(gameEvent.error.type, gameEvent.error.message, gameEvent.user))
                 } else {
                     sseHandlerImpl.emitTo<GameEventDTO>(key, gameEvent, SseEventType.GAME_EVENT)
                 }

@@ -1,6 +1,5 @@
 package com.esgi.codesurvival.rabbit
 
-import com.esgi.codesurvival.application.code.EndGameCommand
 import com.esgi.codesurvival.application.code.compilation.CompilationStep
 import com.esgi.codesurvival.application.code.compilation.CompilationStepType
 import com.esgi.codesurvival.application.code.compilation.commands.CompilationStepCommand
