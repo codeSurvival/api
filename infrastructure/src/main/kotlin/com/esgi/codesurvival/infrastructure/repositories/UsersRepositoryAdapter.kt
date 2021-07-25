@@ -44,6 +44,7 @@ open class UsersRepositoryAdapter @Autowired constructor(
         return UserId(UUID.randomUUID())
     }
 
+    @Transactional
     override fun findByCredentials(username: String, password: String): User? {
         return repository.findByUsernameAndPassword(username, password)?.to()
     }
