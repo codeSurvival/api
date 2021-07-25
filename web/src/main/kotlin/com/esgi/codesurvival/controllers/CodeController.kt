@@ -33,7 +33,7 @@ class CodeController(private val mediator: Mediator) {
     }
 
     @Transactional
-    @GetMapping("execution")
+    @GetMapping("compilationStep")
     fun getCompilationStep(@RequestHeader headers : HttpHeaders): ResponseEntity<CompilationStep?> {
         val token = headers.getFirst(HttpHeaders.AUTHORIZATION) ?: throw Exception("no token")
         val username = mediator.dispatch(ParseTokenQuery(token))
