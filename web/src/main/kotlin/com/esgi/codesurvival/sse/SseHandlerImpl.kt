@@ -32,41 +32,12 @@ class SseHandlerImpl : SseHandler {
         return emitter
     }
 
-
-    override fun emitGameEventTo(userId: String, gameEventSerialized: String, emissionType: SseEventType) {
+    override fun <T> emitTo(userId: String, emission: T, emissionType: SseEventType) {
         if (sseEmitters.containsKey(userId)) {
+            val serializedObject = mapper.writeValueAsString(emission)
             for (emitter in sseEmitters[userId]!!) {
                 try {
-                    this.emit(emitter, userId, gameEventSerialized, emissionType)
-                } catch (e: Error) {
-                    println(e)
-                }
-            }
-        }
-        this.cleanEmitters()
-    }
-
-    override fun emitMessageTo(userId: String, message: String) {
-        if (sseEmitters.containsKey(userId)) {
-            for (emitter in sseEmitters[userId]!!) {
-                try {
-                    println("message emitted : $message")
-                    this.emit(emitter, userId, message, MESSAGE)
-                } catch (e: Error) {
-                    println(e)
-                }
-            }
-        }
-        this.cleanEmitters()
-    }
-
-    override fun emitStep(userId: String, step: CompilationStep) {
-        if (sseEmitters.containsKey(userId)) {
-            val serializedStep = mapper.writeValueAsString(step)
-            for (emitter in sseEmitters[userId]!!) {
-                try {
-                    println("step emitted !")
-                    this.emit(emitter, userId, serializedStep, COMPILATION_STEP)
+                    this.emit(emitter, userId, serializedObject, emissionType)
                 } catch (e: Error) {
                     println(e)
                 }

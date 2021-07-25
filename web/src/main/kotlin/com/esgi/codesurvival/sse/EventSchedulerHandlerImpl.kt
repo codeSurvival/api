@@ -17,7 +17,7 @@ import java.util.*
 @EnableScheduling
 class EventSchedulerHandlerImpl(val sseHandlerImpl: SseHandler, val mediator: Mediator): EventSchedulerHandler {
 
-    val gameEventsByUserId: HashMap<String, Deque<String>> = HashMap()
+    val gameEventsByUserId: HashMap<String, Deque<GameEventDTO>> = HashMap()
     val dequeToRemove : MutableList<String> = mutableListOf()
     private val mapper = jacksonObjectMapper()
 
@@ -26,7 +26,9 @@ class EventSchedulerHandlerImpl(val sseHandlerImpl: SseHandler, val mediator: Me
             gameEventsByUserId[userId] = ArrayDeque()
         }
 
-        gameEventsByUserId[userId]?.add(gameEventString)
+        val gameEventDTO = mapper.readValue<GameEventDTO>(gameEventString)
+
+        gameEventsByUserId[userId]?.add(gameEventDTO)
     }
 
 
@@ -34,16 +36,16 @@ class EventSchedulerHandlerImpl(val sseHandlerImpl: SseHandler, val mediator: Me
     private fun depile() {
         for((key, value) in gameEventsByUserId) {
             if(!value.isEmpty()) {
-                val messageStringified = value.pop()
-                val g = mapper.readValue<GameEventDTO>(messageStringified)
-                if (g.gameover) {
-                    mediator.dispatch(EndGameCommand(g.gameover, g.gameLoss, g.user))
+                val gameEvent = value.pop()
+                if (gameEvent.gameover) {
+                    mediator.dispatch(EndGameCommand(gameEvent.gameover, gameEvent.gameLoss, gameEvent.user))
                 }
 
-                if (g.error != null) {
+                if (gameEvent.error != null) {
                     // TODO handle error
+                } else {
+                    sseHandlerImpl.emitTo<GameEventDTO>(key, gameEvent, SseEventType.GAME_EVENT)
                 }
-                sseHandlerImpl.emitGameEventTo(key, messageStringified, SseEventType.GAME_EVENT)
             } else {
                 dequeToRemove.add(key)
             }

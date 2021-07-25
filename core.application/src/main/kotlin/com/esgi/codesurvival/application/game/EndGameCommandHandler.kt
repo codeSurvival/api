@@ -7,6 +7,8 @@ import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
 import com.esgi.codesurvival.application.security.ApplicationException
 import com.esgi.codesurvival.application.sse.SseHandler
 import com.esgi.codesurvival.application.sse.SseMessage
+import com.esgi.codesurvival.application.sse.jackets.SseEventType
+import com.esgi.codesurvival.application.sse.jackets.SseEventType.MESSAGE
 import com.esgi.codesurvival.application.users.repositories.IUsersRepository
 import com.esgi.codesurvival.domain.user.UserId
 import io.jkratz.mediator.core.Mediator
@@ -39,9 +41,10 @@ open class EndGameCommandHandler(
             }
         }
 
-        sseHandler.emitMessageTo(
+        sseHandler.emitTo<String>(
             request.user,
             (if (request.gameLoss) SseMessage.LOSE_GAME else SseMessage.WIN_GAME).message,
+            MESSAGE
         )
     }
 }

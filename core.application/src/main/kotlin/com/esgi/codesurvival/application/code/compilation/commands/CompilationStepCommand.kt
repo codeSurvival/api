@@ -4,6 +4,8 @@ import com.esgi.codesurvival.application.code.compilation.CompilationStep
 import com.esgi.codesurvival.application.code.repositories.ICompilationStepRepository
 import com.esgi.codesurvival.application.security.ApplicationException
 import com.esgi.codesurvival.application.sse.SseHandler
+import com.esgi.codesurvival.application.sse.jackets.SseEventType
+import com.esgi.codesurvival.application.sse.jackets.SseEventType.COMPILATION_STEP
 import com.esgi.codesurvival.application.users.repositories.IUsersRepository
 import com.esgi.codesurvival.domain.user.UserId
 import io.jkratz.mediator.core.Request
@@ -27,7 +29,7 @@ open class CompilationStepCommandHandler(
         val userUUID = UUID.fromString(request.userId)
         val user = userRepository.findById(UserId(userUUID)) ?: throw ApplicationException("No user")
         repository.add(userUUID, request.step)
-        sseHandler.emitStep(request.userId, request.step)
+        sseHandler.emitTo<CompilationStep>(request.userId, request.step, COMPILATION_STEP)
         return
     }
 

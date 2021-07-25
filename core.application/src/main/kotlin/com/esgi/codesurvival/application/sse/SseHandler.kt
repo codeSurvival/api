@@ -6,7 +6,5 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 interface SseHandler {
     fun subscribeToSse(id: String): SseEmitter?
-    fun emitGameEventTo(userId: String, gameEventSerialized: String, emissionType: SseEventType)
-    fun emitStep(userId: String, step: CompilationStep)
-    fun emitMessageTo(userId: String, message: String)
+    fun <T> emitTo(userId: String, emission: T, emissionType: SseEventType)
 }
