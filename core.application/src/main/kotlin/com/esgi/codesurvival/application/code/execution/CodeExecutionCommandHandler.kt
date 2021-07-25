@@ -3,9 +3,7 @@ package com.esgi.codesurvival.application.code.execution
 import com.esgi.codesurvival.application.code.compilation.CompilationStep
 import com.esgi.codesurvival.application.code.compilation.CompilationStepType
 import com.esgi.codesurvival.application.code.compilation.commands.CompilationStepCommand
-import com.esgi.codesurvival.application.code.execution.anonymizer.AnonymizerFactory
-import com.esgi.codesurvival.application.code.repositories.ICodeOwnerRepository
-import com.esgi.codesurvival.application.code.repositories.ICodeRepository
+import com.esgi.codesurvival.application.code.repositories.ICompilationStepRepository
 import com.esgi.codesurvival.application.languages.repositories.ILanguagesRepository
 import com.esgi.codesurvival.application.levels.repositories.ILevelRepository
 import com.esgi.codesurvival.application.rabbit.EmitterFactory
@@ -30,19 +28,26 @@ open class CodeExecutionCommandHandler(
     private val userRepository: IUsersRepository,
     private val levelRepository: ILevelRepository,
     private val languageRepository: ILanguagesRepository,
-    private val codeRepository: ICodeRepository,
-    private val anonymizerFactory: AnonymizerFactory,
-    private val codeOwnerRepository: ICodeOwnerRepository,
+    private val compilationStepRepository: ICompilationStepRepository,
     private val codeEmitterFactory: EmitterFactory,
     private val mediator: Mediator,
 ) :
     RequestHandler<CodeExecutionCommand, CodeOutput> {
     override fun handle(request: CodeExecutionCommand): CodeOutput {
+        val user = userRepository.findByUsername(request.username) ?: throw ApplicationException("User not found")
+        val compilationStep = compilationStepRepository.getUserCompilationStep(user.id.value)
+
+        if (compilationStep != null &&
+            !listOf(CompilationStepType.NONE, CompilationStepType.DONE)
+                .contains(compilationStep.compilationType)
+        ) {
+            throw ApplicationException("Code is already being processed")
+        }
+
         var returnData = CodeOutput(true, mutableListOf(), true)
 
         val submittedAlgorithm = Algorithm(request.code, request.languageId)
 
-        val user = userRepository.findByUsername(request.username) ?: throw ApplicationException("User not found")
         val constraints =
             levelRepository.findAllConstraintsByLevelId(user.level) ?: throw ApplicationException("Level not found")
         val player = Player(user.username, constraints)
