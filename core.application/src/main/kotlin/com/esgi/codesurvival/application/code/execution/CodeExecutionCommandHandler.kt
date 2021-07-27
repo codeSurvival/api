@@ -73,6 +73,12 @@ open class CodeExecutionCommandHandler(
         returnData.failedConstraints = rulesResult.failedConstraints.map { it.to() }
 
         if (!rulesResult.success) {
+            mediator.dispatch(
+                CompilationStepCommand(
+                    CompilationStep(CompilationStepType.NONE),
+                    user.id.value.toString()
+                )
+            )
             return returnData
         }
         val previousCode = codeOwnerRepository.getUserPreviousCode(user.id)
