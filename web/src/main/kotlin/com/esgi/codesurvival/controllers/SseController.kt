@@ -1,7 +1,6 @@
 package com.esgi.codesurvival.controllers
 
 import com.esgi.codesurvival.application.sse.SseHandler
-import io.jkratz.mediator.core.Mediator
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -11,7 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 @RestController
 @RequestMapping("gameEvents")
-class GameEventController(
+class SseController(
     val sseHandler: SseHandler
     ) {
 

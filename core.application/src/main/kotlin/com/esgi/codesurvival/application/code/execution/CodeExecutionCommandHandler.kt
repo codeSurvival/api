@@ -83,13 +83,14 @@ open class CodeExecutionCommandHandler(
             val isTooSimilar = comparable.isSimilar(previousCode.code, 0.9)
 
             if (isTooSimilar) {
+                mediator.dispatch(
+                    CompilationStepCommand(
+                        CompilationStep(CompilationStepType.NONE),
+                        user.id.value.toString()
+                    )
+                )
                 returnData.similaritySuccess = false
-        mediator.dispatch(
-            CompilationStepCommand(
-                CompilationStep(CompilationStepType.NONE),
-                user.id.value.toString()
-            )
-        )
+                returnData.previousCode = previousCode.code
                 return returnData
             }
         }
