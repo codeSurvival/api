@@ -16,4 +16,5 @@ interface IUsersRepository {
     fun findByUsername(username: String): User?
 
     fun findById(id : UserId): User?
+    fun deleteById(user: User)
 }

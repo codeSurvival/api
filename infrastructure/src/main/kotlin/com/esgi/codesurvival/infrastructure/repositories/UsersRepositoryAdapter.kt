@@ -57,6 +57,10 @@ open class UsersRepositoryAdapter @Autowired constructor(
         return repository.findByIdOrNull(id.value)?.to()
     }
 
+    override fun deleteById(user: User) {
+        repository.deleteById(user.id.value)
+    }
+
     override fun getUserPreviousCode(userId: UserId): Algorithm? {
         val savedUser = repository.findByIdOrNull(userId.value)?.to() ?: return null
         if (savedUser.lastCodeId == null) {

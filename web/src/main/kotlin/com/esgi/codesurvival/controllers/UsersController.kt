@@ -2,6 +2,7 @@ package com.esgi.codesurvival.controllers
 
 import com.esgi.codesurvival.application.security.ApplicationException
 import com.esgi.codesurvival.application.security.parse_token.ParseTokenQuery
+import com.esgi.codesurvival.application.users.commands.DeleteUserCommand
 import com.esgi.codesurvival.application.users.login.login_user.ConnectedUser
 import com.esgi.codesurvival.application.users.login.login_user.LoginUserCommand
 import com.esgi.codesurvival.application.users.queries.UserResume
@@ -10,6 +11,7 @@ import com.esgi.codesurvival.application.users.login.register_user.UserRegisterC
 import com.esgi.codesurvival.application.users.queries.get_user_by_username.GetUserByUsernameQuery
 import com.esgi.codesurvival.application.users.queries.get_users.GetUsersQuery
 import io.jkratz.mediator.core.Mediator
+import io.jkratz.mediator.core.Request
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -79,6 +81,16 @@ class UsersController(private val mediator: Mediator) {
     fun getById(@PathVariable id: UUID) : ResponseEntity<UserResume> {
         return try {
             ResponseEntity.ok(mediator.dispatch(GetUserByIdQuery(id)))
+        } catch (e: ApplicationException) {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @DeleteMapping("{id}")
+    @Transactional
+    fun deleteById(@PathVariable id: UUID) : ResponseEntity<Unit> {
+        return try {
+            ResponseEntity.ok(mediator.dispatch(DeleteUserCommand(id)))
         } catch (e: ApplicationException) {
             ResponseEntity.notFound().build()
         }
